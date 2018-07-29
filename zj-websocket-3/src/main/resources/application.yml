@@ -1,0 +1,22 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: zj-websocket
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+    #,file:/www/ecampus/static/
+  datasource:
+    #type: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/zj_websocket?characterEncoding=utf-8
+    username: root
+    password: root
+#    url: jdbc:mysql://mtest.21cnjy.db:3306/ecampus_new?characterEncoding=utf-8
+#    username: test
+#    password: 21szxymysql  
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  type-aliases-package: com.zj.module.domain
+  type-handlers-package: com.zj.module.mapper
+  mapper-locations: classpath:com.zj.module.mapper/*.xml

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.modules.mapper.UserMapper">
+
+   
+  	<resultMap id="BaseResultMap" type="com.zj.module.domain.User">
+        <id column="id" property="id" />
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="actual_name" property="actualName" />
+        <result column="type" property="type" />
+        <result column="valid_flag" property="validFlag" />
+        <result column="make_time" property="makeTime" />
+        <result column="make_user" property="makeUser" />
+        <result column="modify_time" property="modifyTime" />
+        <result column="modify_user" property="modifyUser" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_name AS userName, password, actual_name AS actualName, type, valid_flag AS validFlag, make_time AS makeTime, make_user AS makeUser, modify_time AS modifyTime, modify_user AS modifyUser
+    </sql>
+
+	<select id="queryByPage" parameterType="com.zj.module.domain.User" resultType="com.zj.module.domain.User" useCache="false">
+		
+		select 
+			<include refid="Base_Column_List" /> 
+		from zw_user
+		where 1=1
+		<if test="id != null and id != ''">
+			and id = id
+		</if>
+		<if test="userName != null and userName != ''">
+			and user_name = userName
+		</if>
+		<if test="password != null and password != ''">
+			and password = password
+		</if>
+		<if test="actualName != null and actualName != ''">
+			and actual_name = actualName
+		</if>
+		<if test="type != null and type != ''">
+			and type = type
+		</if>
+		<if test="validFlag != null and validFlag != ''">
+			and valid_flag = validFlag
+		</if>
+		<if test="makeTime != null and makeTime != ''">
+			and make_time = makeTime
+		</if>
+		<if test="makeUser != null and makeUser != ''">
+			and make_user = makeUser
+		</if>
+		<if test="modifyTime != null and modifyTime != ''">
+			and modify_time = modifyTime
+		</if>
+		<if test="modifyUser != null and modifyUser != ''">
+			and modify_user = modifyUser
+		</if>
+		
+  	</select>
+  	
+  	<insert id="add" parameterType="com.zj.module.domain.User" useGeneratedKeys="true" keyProperty="id">
+	    insert into zw_user
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+<if test="id != null" >
+			id,
+		</if>
+<if test="userName != null" >
+			user_name,
+		</if>
+<if test="password != null" >
+			password,
+		</if>
+<if test="actualName != null" >
+			actual_name,
+		</if>
+<if test="type != null" >
+			type,
+		</if>
+<if test="validFlag != null" >
+			valid_flag,
+		</if>
+<if test="makeTime != null" >
+			make_time,
+		</if>
+<if test="makeUser != null" >
+			make_user,
+		</if>
+<if test="modifyTime != null" >
+			modify_time,
+		</if>
+<if test="modifyUser != null" >
+			modify_user,
+		</if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+		<if test="id != null" >
+			#{id,jdbcType=VARCHAR},
+		</if>
+		<if test="userName != null" >
+			#{userName,jdbcType=VARCHAR},
+		</if>
+		<if test="password != null" >
+			#{password,jdbcType=VARCHAR},
+		</if>
+		<if test="actualName != null" >
+			#{actualName,jdbcType=VARCHAR},
+		</if>
+		<if test="type != null" >
+			#{type,jdbcType=VARCHAR},
+		</if>
+		<if test="validFlag != null" >
+			#{validFlag,jdbcType=VARCHAR},
+		</if>
+		<if test="makeTime != null" >
+			#{makeTime,jdbcType=VARCHAR},
+		</if>
+		<if test="makeUser != null" >
+			#{makeUser,jdbcType=VARCHAR},
+		</if>
+		<if test="modifyTime != null" >
+			#{modifyTime,jdbcType=VARCHAR},
+		</if>
+		<if test="modifyUser != null" >
+			#{modifyUser,jdbcType=VARCHAR},
+		</if>
+	  </trim>
+	    
+  </insert>
+  
+  <update id="update" parameterType="com.zj.module.domain.User" >
+
+    update zw_user
+    <set >
+<if test="id != null" >
+        id = #{id,jdbcType=VARCHAR},
+      </if>
+<if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+<if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+<if test="actualName != null" >
+        actual_name = #{actualName,jdbcType=VARCHAR},
+      </if>
+<if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+<if test="validFlag != null" >
+        valid_flag = #{validFlag,jdbcType=VARCHAR},
+      </if>
+<if test="makeTime != null" >
+        make_time = #{makeTime,jdbcType=VARCHAR},
+      </if>
+<if test="makeUser != null" >
+        make_user = #{makeUser,jdbcType=VARCHAR},
+      </if>
+<if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=VARCHAR},
+      </if>
+<if test="modifyUser != null" >
+        modify_user = #{modifyUser,jdbcType=VARCHAR},
+      </if>
+</set>
+	where id = #{id,jdbcType=INTEGER}
+	
+  </update>
+  
+  <update id="setInvalidWithString" parameterType="String" >
+
+    update zw_user
+    <set >
+	</set>
+	where id = #{id}
+	
+  </update>
+  
+  <update id="setInvalidWithInt" parameterType="Integer" >
+
+    update zw_user
+    <set >
+	</set>
+	where id = #{id}
+	
+  </update>
+  	
+  	
+
+</mapper>
