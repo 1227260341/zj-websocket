@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 9091
 spring:
   application:
     name: school
@@ -8,7 +8,7 @@ spring:
     
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/zj_websocket?characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3307/zj_websocket?characterEncoding=utf-8
     username: root
     password: root
     

@@ -20,7 +20,7 @@ public class test {
 	
 	@RequestMapping("/bb")
 	public Object bb(User user) {
-//		List<User> users = userMapper.queryByPage(user);
-		return user;
+		List<User> users = userMapper.queryByPage(user);
+		return users;
 	}
 }

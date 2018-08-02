@@ -70,4 +70,22 @@ public interface UserMapper {
 	 */
 	public int setInvalidWithString(String id);
 	
+	@Select("select * from zw_user where user_name = #{userName} and password = #{password}")
+	public User login(@Param("userName") String userName, @Param("password") String password);
+	
+	@Select("SELECT * FROM zw_user zu " + 
+			"where zu.id != #{userId} and zu.id not in( " + 
+			"	select object_id id from zw_friend_user fu " + 
+			"	where fu.user_id = #{userId} and type = 1 and fu.valid_flag = 'Y' " + 
+//			"	union all " + 
+//			"	select user_id id from zw_friend_user fu " + 
+//			"	where fu.object_id = #{userId} and type = 1 and fu.valid_flag = 'Y' " + 
+			") " + 
+			"and zu.valid_flag = 'Y';")
+	public List<User> getStranger(int userId);
+	
+	@Select("select u.* from zw_friend_user fu " + 
+			"join zw_user u on u.id = fu.object_id " + 
+			"where fu.user_id = #{userId} and u.valid_flag = 'Y' and fu.valid_flag = 'Y'")
+	public List<User> getFriends(int userId);
 }
