@@ -17,6 +17,7 @@
     		background-color:white;
     		float: left;
     		margin-left:50px;
+    		overflow:scroll; 
     	}
     	
     	#chats {
@@ -76,6 +77,7 @@
 <div>
 	<div id="strangers" class="users">
 		<p class="title">陌生人</p>
+		<div class="items"> 
 		<!-- <div class="item" >
 			<img src="/img/timg.jpg">
 			<div class="addStranger">
@@ -83,12 +85,13 @@
 				<p class="p_content">这个人什么都没说</p>
 			</div>	
 		</div> -->
-		
+		</div>
 	</div>
 	
 	
 	<div id="friends" class="users">
 		<p class="title">陈年老友</p>
+		<div class="items"> 
 		<!-- <div class="item" >
 			<img src="/img/timg.jpg">
 			<div>
@@ -96,7 +99,7 @@
 				<p class="p_content">内容</p>
 			</div>	
 		</div> -->
-		
+		</div>
 	</div>
 	
 	<div id="chats">
@@ -176,8 +179,9 @@
 						return ;
 					}
 					
-					//实现陌生人列表
+					$("#strangers .items").html("");
 					
+					//实现陌生人列表
 					for(var i = 0; i < res.data.length; i ++) {
 						var item = res.data[i];
 						var html = "<div class='item' onclick='addStranger("+ item.id +")'>";
@@ -188,7 +192,7 @@
 						html += "</div>";
 						html += "</div>";
 						
-						$("#strangers").append(html);
+						$("#strangers .items").append(html);
 					}
 				} else {
 					alert(res.message);
@@ -216,11 +220,13 @@
 						return ;
 					}
 					
+					$("#friends .items").html("");
+					
 					//实现好友列表
 					
 					for(var i = 0; i < res.data.length; i ++) {
 						var item = res.data[i];
-						var html = "<div class='item' >";
+						var html = "<div class='item' onclick='delFriend("+ item.id +")'  ondblclick='chatWithFriend("+ item.id +", event)' >";
 						html += "<img src='/img/timg.jpg'>";
 						html += "<div>";
 						html += "<p>"+ item.userName +"</p>";
@@ -228,7 +234,7 @@
 						html += "</div>";
 						html += "</div>";
 						
-						$("#friends").append(html);
+						$("#friends .items").append(html);
 					}
 				} else {
 					alert(res.message);
@@ -242,7 +248,62 @@
     
     //添加陌生人
     function addStranger(userId) {
-    	alert(userId);
+    	if (!confirm("是否确定添加该用户？")) {
+    		return ;
+    	}
+    	
+    	$.ajax({
+			url:"/user/addFriend?objectId=" + userId,
+			type:"GET",
+			//data:params,
+			dataType:"json",
+			success:function(res) {
+				if(res.code == 0) {
+					getStrange();
+    				getFriends();
+					
+				} else {
+					alert(res.message);
+					if (res.code == 1) {//说名session 过期则需要重新登录
+						location.href = "/index.html";
+					}
+				}
+			}
+		});
+    	
+    }
+    
+    //添加陌生人
+    function delFriend(userId) {
+    	if (!confirm("是否确定删除该用户？")) {
+    		return ;
+    	}
+    	$.ajax({
+			url:"/user/delFriend?objectId=" + userId,
+			type:"GET",
+			//data:params,
+			dataType:"json",
+			success:function(res) {
+				if(res.code == 0) {
+					
+					getStrange();
+    				getFriends();
+					
+				} else {
+					alert(res.message);
+					if (res.code == 1) {//说名session 过期则需要重新登录
+						location.href = "/index.html";
+					}
+				}
+			}
+		});
+    	
+    }
+    
+    function chatWithFriend(userId, e) {
+    	e.stopPropagation();
+		e.preventDefault(); 
+    	alert("------------");
     }
     
     //此处写法先后顺序问题 所以不能实现

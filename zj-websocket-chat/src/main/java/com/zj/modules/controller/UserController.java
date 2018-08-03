@@ -101,8 +101,8 @@ public class UserController {
 	 * 添加好友
 	 * @return
 	 */
-	@RequestMapping("/addFriends")
-	public Object addFriends(int objectId) {
+	@RequestMapping("/addFriend")
+	public Object addFriend(int objectId) {
 		Map returnMap = new HashMap<>();
 		User loginUser = getLoginUser();
 		
@@ -119,6 +119,7 @@ public class UserController {
 		friendUser.setType(1);//说名是好友
 		friendUserMapper.add(friendUser);
 		
+		friendUser.setId(null);
 		friendUser.setUserId(objectId);
 		friendUser.setObjectId(loginUser.getId());
 		friendUser.setType(1);//说名是好友
@@ -129,6 +130,29 @@ public class UserController {
 		return returnMap;
 	}
 	
+	/**
+	 * 删除好友
+	 * @param objectId
+	 * @return
+	 */
+	@RequestMapping("/delFriend")
+	public Object delFriend(int objectId) {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		
+		if (loginUser == null) {
+			returnMap.put("code", 1);
+			returnMap.put("message", "session过期，请重新登录！");
+			return returnMap;
+		}
+		
+		friendUserMapper.delFriend(loginUser.getId(), objectId);
+		friendUserMapper.delFriend(objectId, loginUser.getId());
+		
+		returnMap.put("code", 0);
+		returnMap.put("message", "删除好友成功！");
+		return returnMap;
+	}
 	
 	
 	

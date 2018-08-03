@@ -36,9 +36,7 @@
 		<if test="type != null and type != ''">
 			and type = #{type}
 		</if>
-		<if test="validFlag != null and validFlag != ''">
-			and valid_flag = #{validFlag}
-		</if>
+		and valid_flag = 'Y'
 		<if test="makeTime != null and makeTime != ''">
 			and make_time = #{makeTime}
 		</if>
@@ -69,9 +67,7 @@
 	    <if test="type != null" >
 			type,
 		</if>
-	    <if test="validFlag != null" >
-			valid_flag,
-		</if>
+		valid_flag,
 	    <if test="makeTime != null" >
 			make_time,
 		</if>
@@ -98,9 +94,7 @@
 		<if test="type != null" >
 			#{type,jdbcType=VARCHAR},
 		</if>
-		<if test="validFlag != null" >
-			#{validFlag,jdbcType=VARCHAR},
-		</if>
+		'Y',
 		<if test="makeTime != null" >
 			#{makeTime,jdbcType=VARCHAR},
 		</if>

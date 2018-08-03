@@ -69,4 +69,7 @@ public interface FriendUserMapper {
 	 */
 	public int setInvalidWithString(String id);
 	
+	@Select("update zw_friend_user set valid_flag = 'N' where user_id = #{userId} and object_id = #{objectId} and type = 1;")
+	public void delFriend(@Param("userId") int userId, @Param("objectId") int objectId);
+	
 }
