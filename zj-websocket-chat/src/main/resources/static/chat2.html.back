@@ -21,94 +21,14 @@
     	}
     	
     	#chats {
-    		display: none;
     		width:450px;
     		height:320px;
     		border:1px solid red;
     		background-color:white;
     		float: left;
-    		margin-left:80px;
+    		margin-left:150px;
     		//overflow:scroll; 
-    		//overflow:auto
-    	}
-    	
-    	#chats .content{
-    		height:290px;
-    		overflow:auto;
-    	}
-    	#chats .userChat {
-    		height: 30px;
-    	}
-    	#chats .title{
-    		text-align: center;
-    		height: 50px;
-		    line-height: 50px;
-		    font-size: 18px;
-		    background-color: #0fc5ef;
-		    
-    	}
-    	#chats .userChat input{
-    		height: 24px;
-    		width: 360px;
-    		border-radius: 10px;
-    	}
-    	#chats .userChat button{
-    		height: 28px;
-    		width: 76px;
-    		border-radius: 10px;
-    	}
-    	
-    	#chats .content .other , #chats .content .myself {
-    		height: 46px;
-    		border-bottom: 1px solid #8080803b;
-    		padding : 5px;
-    	}
-    	
-    	#chats .content .other div, #chats .content .myself div{
-    		height: 46px;
-    	}
-    	
-    	#chats .content .other img{
-    		height: 50px;
-    		width: 50px;
-    		float: left;
-    		border-radius: 25px;
-   	 		border: 1px solid red;
-   	 		margin-right:10px;
-    	}
-    	
-    	#chats .content .other div{
-    		line-height: 50px;
-    	}
-    	
-    	#chats .content .other p{
-    		height: 46px;
-    		margin:0px;
-    	}
-    	
-    	#chats .content .myself{
-    		//float: right;
-    		//width:460px;
-    	}
-    	
-    	#chats .content .myself div{
-    		float: right;
-    		width:100%;
-    	}
-    	
-    	#chats .content .myself img {
-    		height: 50px;
-    		width: 50px;
-    		float: right;
-    		border-radius: 25px;
-   	 		border: 1px solid red;
-   	 		margin-left:10px;
-    	}
-    	
-    	#chats .content .myself p{
-    		height: 46px;
-    		display:inline;
-    		float: right;
+    		overflow:auto
     	}
     	
     	.users .item {
@@ -183,27 +103,7 @@
 	</div>
 	
 	<div id="chats">
-		<div class="title">这是你的小亲亲啊</div>
-		<div class="content">
-			<!-- <div class="other">
-				<div>
-					<img src="/img/timg.jpg">
-					<p>内容</p>
-				</div>
-			</div> -->
-			
-			<!-- <div class="myself">
-				<div>
-					<img src="/img/timg.jpg">
-					<p>内容</p>
-				</div>
-			</div> -->
-			
-		</div>
-		
-		<div class="userChat">
-			<input placeholder="请输入聊天内容" /> <button onclick="send()">发送</button>
-		</div>
+		你正在于某某某聊天
 	</div>
 	
 
@@ -211,19 +111,16 @@
 
 
 
-<!-- <div style ="width:150px; background-color:white;">
+<div style ="width:150px; background-color:white;">
 	Welcome<br/>
 	<input id="text" type="text" /><button onclick="send()">Send</button>    <button onclick="closeWebSocket()">Close</button>
 	<div id="message">
 	</div>
-</div> -->
+</div>
 </body>
 
 <script src="/jquery/jquery.min.js?v=2.1.4"></script>
 <script type="text/javascript">
-    
-    var uid = sessionStorage.getItem("userId");
-    console.log("当前登陆人id：" + uid);
     
     $(document).ready(function() {
     	
@@ -231,16 +128,6 @@
     	getFriends();
     	
     });
-    
-    document.onkeydown = function(e) {
-        var keyCode = e.keyCode || e.which || e.charCode;
-        //var ctrlKey = e.ctrlKey || e.metaKey;
-        if(objectId != "" && keyCode == 13) {
-        	$("#chats .userChat button").click();
-        }
-        //e.preventDefault();
-        //return;
-    }
     
     //获取陌生人
     function getStrange() {
@@ -305,7 +192,7 @@
 					
 					for(var i = 0; i < res.data.length; i ++) {
 						var item = res.data[i];
-						var html = "<div class='item' onclick='click1("+ item.id +")'  ondblclick='dblclick("+ item.id +", \""+ item.userName +"\")' >";
+						var html = "<div class='item' onclick='click1("+ item.id +")'  ondblclick='dblclick("+ item.id +")' >";
 						html += "<img src='/img/timg.jpg'>";
 						html += "<div>";
 						html += "<p>"+ item.userName +"</p>";
@@ -354,23 +241,23 @@
     
     var time = null;
 	//单击事件
-	function click1(id){
+	function click1(objectId){
 		//取消上次延时未执行的方法
 		clearTimeout(time);
 		//设置延时300ms
 		time = setTimeout(function(){
 			//在此写单击事件要执行的代码
-			delFriend(id);
+			delFriend(objectId);
 		},300);
 	}
 	 
 	//双击事件
-	function dblclick(id, userName){
+	function dblclick(objectId){
 		//取消上次延时未执行的方法
 		clearTimeout(time);
 		//下面写双击事件要执行的代码
 		console.log("这是双击");
-		chatWithFriend(id, userName);
+		chatWithFriend(objectId);
 	}
     
     
@@ -401,38 +288,13 @@
     	
     }
     
-    var objectId = "";
     //聊天
-    function chatWithFriend(id, userName, e) {
+    function chatWithFriend(objectId, e) {
     	//e.stopPropagation();
 		//e.preventDefault(); 
-    	console.log("----chatWithFriend--------聊天对象id=" + id);
-    	//显示聊天窗口
-    	$("#chats").css("display", "block");
+    	console.log("----chatWithFriend--------聊天对象id=" + objectId);
     	
-    	if (objectId != "" && objectId != id) {//说明新有开启消息
-    		$("#chats .content").html("");
-    	}
-    	$("#chats .title").html(userName);
-    	objectId = id;//给全局变量赋值
     	
-    	/* //获取笑嘻嘻记录
-    	$.ajax({
-			url:"/user/delFriend?objectId=" + userId,
-			type:"GET",
-			//data:params,
-			dataType:"json",
-			success:function(res) {
-				if(res.code == 0) {
-					
-					getStrange();
-    				getFriends();
-					
-				} else {
-					alert(res.message);
-				}
-			}
-		}); */
     	
     }
     
@@ -481,29 +343,7 @@
 
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML){
-        //document.getElementById('message').innerHTML += innerHTML + '<br/>';
-    	
-        /* <div class="other">
-			<div>
-				<img src="/img/timg.jpg">
-				<p>内容</p>
-			</div>
-		</div> */
-		
-		/* <div class="myself">
-			<div>
-				<img src="/img/timg.jpg">
-				<p>内容</p>
-			</div>
-		</div> */
-		var html = "<div class='other'>";
-		html += "<div>";
-		html += "<img src='/img/timg.jpg'>";
-		html += "<p>" + innerHTML + "</p>";
-		html += "</div>";
-		html += "</div>";
-		$("#chats .content").append(html);
-        
+        document.getElementById('message').innerHTML += innerHTML + '<br/>';
     }
 
     //关闭连接
@@ -513,35 +353,8 @@
 
     //发送消息
     function send(){
-    	var content = $("#chats input").val();//获取到发送的内容
-    	if (content == null || content == "") {
-    		//alert("");
-    		console.log("未输入消息");
-    		return ;
-    	}
-    	console.log("发送的消息！" + content + "需要发送的对象id=" + objectId);
-    	var params = {
-    		content:content,
-    		objectId:objectId,
-    		type:1//1 好友， 2 群
-    	}
-    	params = JSON.stringify(params);
-        websocket.send(params);
-        
-        
-        
-        //清空发送的消息
-        $("#chats input").val("");
-        
-        //自身发的消息先 渲染上去
-        var html = "<div class='myself'>";
-		html += "<div>";
-		html += "<img src='/img/timg.jpg'>";
-		html += "<p>" + content + "</p>";
-		html += "</div>";
-		html += "</div>";
-		$("#chats .content").append(html);
-        
+        var message = document.getElementById('text').value;
+        websocket.send(message);
     }
 </script>
 </html>

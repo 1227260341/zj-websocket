@@ -1,20 +1,42 @@
 package com.zj.modules.websocket;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.zj.modules.domain.UserChat;
+import com.zj.modules.mapper.UserChatMapper;
+import com.zj.modules.mapper.UserMapper;
+import com.zj.modules.service.UserService;
+
+import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 //configurator = WebsocketConfig.class 该属性就是我上面配置的信息
 @ServerEndpoint(value = "/chat", configurator = WebSocketConfig.class)
 @Component    //此注解千万千万不要忘记，它的主要作用就是将这个监听器纳入到Spring容器中进行管理
 public class WebSocketController {
+	
+	@Resource
+	private UserService userService;
+	@Resource
+	private UserChatMapper userChatMapper;
+	@Autowired
+	private UserService userService1;
+	
   //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
   private static int onlineCount = 0;
 
   //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
-  private static CopyOnWriteArraySet<WebSocketController> webSocketSet = new CopyOnWriteArraySet<WebSocketController>();
+//  private static CopyOnWriteArraySet<WebSocketController> webSocketSet = new CopyOnWriteArraySet<WebSocketController>();
+  private static Map<Integer, WebSocketController> webSocketSet = new HashMap<>();
 
   //与某个客户端的连接会话，需要通过它来给客户端发送数据
   private Session session;
@@ -29,10 +51,21 @@ public class WebSocketController {
 
     //获取WebsocketConfig.java中配置的“sessionId”信息值
     String httpSessionId = (String) config.getUserProperties().get("sessionId");
+    if (config.getUserProperties().get("userId") == null) {
+    	return ;
+    }
+    int userId = (int) config.getUserProperties().get("userId");
+    
+    System.out.println("----userId-----" + userId + "====sessionId=" + httpSessionId);
+    
     //session.getUserPrincipal().getName();
     this.session = session;
 //    WebSocket b = this;
-    webSocketSet.add(this);     //加入set中
+    //webSocketSet.add(this);     //加入set中
+    
+    //加入map
+    webSocketSet.put(userId, this);
+    
     addOnlineCount();           //在线数加1
     System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());
     try {
@@ -59,16 +92,55 @@ public class WebSocketController {
    */
   @OnMessage
   public void onMessage(String message, Session session) {
-    System.out.println("来自客户端的消息:" + message);
-    session.getUserPrincipal();
-    //群发消息
-    for (WebSocketController item : webSocketSet) {
-      try {
-        item.sendMessage(message);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+	  if (message == null || "".equals(message)) {
+		  System.out.println("------------没有消息--------------");
+		  return ;
+	  }
+	  
+	  try {
+		  JSONObject jsonObj = JSON.parseObject(message);
+		  int type = (int) jsonObj.get("type");
+		  int objectId = (int) jsonObj.get("objectId");
+		  String content = (String) jsonObj.get("content");
+		  
+		  System.out.println("来自客户端的消息:" + content);
+		  Principal p = session.getUserPrincipal();
+		  Map sessionMap = session.getUserProperties();
+		  int userId = (int) sessionMap.get("userId");//获取到当前登陆人id
+		  
+		  if (type != 1) {//说明是群发
+			  
+		  } else {//好友消息实现
+			  WebSocketController item = webSocketSet.get(objectId);
+			  if (item != null) {//未在先 则无需发送消息
+				  item.sendMessage(content);
+			  }
+			  
+			  //保存消息指数据库
+//			  UserChat userChat = new UserChat();
+//			  userChat.setUserId(userId);
+//			  userChat.setObjectId(objectId);
+//			  userChat.setMessage(content);
+//			  userChat.setType(1);//默认为好友消息
+//			  
+//			  //userChatMapper.add(userChat);
+//			  
+//			  UserService service = new UserService();		
+//			  service.addChatMessage(userChat);
+			  
+		  }
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+	  
+	  //群发消息
+//	  for (WebSocketController item : webSocketSet) {
+//		  try {
+//			  item.sendMessage(content);
+//		  } catch (IOException e) {
+//			  e.printStackTrace();
+//		  }
+//	  }
   }
 
   /**
@@ -91,14 +163,17 @@ public class WebSocketController {
    * 群发自定义消息
    */
   public static void sendInfo(String message) throws IOException {
-    for (WebSocketController item : webSocketSet) {
-    	
-      try {
-        item.sendMessage(message);
-      } catch (IOException e) {
-        continue;
-      }
-    }
+//	  for (int key : webSocketSet.keySet()) {
+//		  
+//	  }
+	  
+	  try {
+		  for (WebSocketController item : webSocketSet.values()) {
+			  item.sendMessage(message);
+		  }
+	  } catch (Exception e) {
+		  e.printStackTrace();
+	  }
   }
 
   public static synchronized int getOnlineCount() {

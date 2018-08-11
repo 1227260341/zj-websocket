@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zj.modules.domain.FriendUser;
 import com.zj.modules.domain.User;
+import com.zj.modules.domain.UserChat;
 import com.zj.modules.mapper.FriendUserMapper;
+import com.zj.modules.mapper.UserChatMapper;
 import com.zj.modules.mapper.UserMapper;
 
 
@@ -27,6 +29,8 @@ public class UserController {
 	private FriendUserMapper friendUserMapper;
 	@Resource
 	private HttpServletRequest request;
+	@Resource
+	private UserChatMapper userChatMapper;
 	
 	@RequestMapping("/login")
 	public Object bb() {
@@ -154,7 +158,42 @@ public class UserController {
 		return returnMap;
 	}
 	
+	/**
+	 * 将发送的消息保存入库
+	 * @param userChat
+	 * @return
+	 */
+	@RequestMapping("/addChatMessage")
+	public Object addChatMessage(UserChat userChat) {
+		Map returnMap = new HashMap<>();
+		userChatMapper.add(userChat);
+		returnMap.put("code", 0);
+		returnMap.put("message", "入库消息成功");
+		return returnMap;
+	}
 	
+	/**
+	 * 获取消息记录
+	 * @param objectId
+	 * @return
+	 */
+	/*@RequestMapping("/getMessageRecord")
+	public Object getMessageRecord(int objectId) {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		
+		if (loginUser == null) {
+			returnMap.put("code", 1);
+			returnMap.put("message", "session过期，请重新登录！");
+			return returnMap;
+		}
+		
+		
+		
+		returnMap.put("code", 0);
+		returnMap.put("message", "删除好友成功！");
+		return returnMap;
+	}*/
 	
 	
 	
