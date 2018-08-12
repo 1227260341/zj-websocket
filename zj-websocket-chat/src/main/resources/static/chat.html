@@ -405,7 +405,7 @@
     }
     
     var objectId = "";
-    var openNew = false;
+    var openNew = true;//默认为true 是初始页面时也未打开页面，或打开的第一个也是new的窗口
     //聊天
     function chatWithFriend(id, userName, e) {
     	//e.stopPropagation();
@@ -458,6 +458,9 @@
 
     //接收到消息的回调方法
     websocket.onmessage = function(event){
+    	if (event.data == null) {
+    		return ;
+    	}
         setMessageInnerHTML(event.data);
     }
 
@@ -472,12 +475,21 @@
     }
 
     //将消息显示在网页上
-    function setMessageInnerHTML(innerHTML){
-		
-		if (openNew) {//说明打开了 和其他人聊天的窗口 则接入其他的消息 提醒，但不渲染上去
-			
+    function setMessageInnerHTML(data){
+    	
+    	try {
+    		data = JSON.parse(data);
+    	} catch (e) {
+    		console.log("---setMessageInnerHTML--" + data);
+    		return ;
+    	}
+    	
+		var sendUserId = data.sendUserId;//发送消息过来的id
+		if (openNew && objectId != sendUserId) {//说明打开了 和其他人聊天的窗口 则接入其他的消息 提醒，但不渲染上去
+			alert("少年你收到了一条消息！");
+			return;
 		}
-    	renderOtherHtml(innerHTML);
+    	renderOtherHtml(data.message);
         
     }
 

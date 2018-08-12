@@ -1,10 +1,13 @@
 package com.zj.modules.websocket;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zj.modules.domain.User;
 import com.zj.modules.domain.UserChat;
 import com.zj.modules.mapper.UserChatMapper;
 import com.zj.modules.mapper.UserMapper;
@@ -21,15 +24,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 //configurator = WebsocketConfig.class 该属性就是我上面配置的信息
 @ServerEndpoint(value = "/chat", configurator = WebSocketConfig.class)
+//@ServerEndpoint(value = "/chat", configurator = WebSocketConfig.class, encoders = { ServerEncoder.class })
 @Component    //此注解千万千万不要忘记，它的主要作用就是将这个监听器纳入到Spring容器中进行管理
 public class WebSocketController {
-	
-	@Resource
-	private UserService userService;
-	@Resource
-	private UserChatMapper userChatMapper;
-	@Autowired
-	private UserService userService1;
+	private static final Log log = LogFactory.getLog(WebSocketController.class);
 	
   //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
   private static int onlineCount = 0;
@@ -98,6 +96,7 @@ public class WebSocketController {
 	  }
 	  
 	  try {
+		  Map sendMessage = new HashMap<>();
 		  JSONObject jsonObj = JSON.parseObject(message);
 		  int type = (int) jsonObj.get("type");
 		  int objectId = (int) jsonObj.get("objectId");
@@ -107,16 +106,22 @@ public class WebSocketController {
 		  Principal p = session.getUserPrincipal();
 		  Map sessionMap = session.getUserProperties();
 		  int userId = (int) sessionMap.get("userId");//获取到当前登陆人id
-		  
+		  User sendUser = (User) sessionMap.get("user");//获取到当前登陆人id
+		  WebSocketController item = webSocketSet.get(objectId);
+		  if (item == null) {//未在线 则无需发送消息
+			  System.out.println("不存在websocket对象，即对方不在线");
+			  return ;
+		  }
+		  sendMessage.put("type", type);
+		  sendMessage.put("sendUserId", userId);//发送的对象id（即接受消息的人）
+		  sendMessage.put("sendUserName", sendUser.getUserName());
+		  sendMessage.put("message", content);
 		  if (type != 1) {//说明是群发
 			  
 		  } else {//好友消息实现
-			  WebSocketController item = webSocketSet.get(objectId);
-			  if (item != null) {//未在先 则无需发送消息
-				  item.sendMessage(content);
-			  }
+			  item.sendMessage(MapToJson(sendMessage));
 		  }
-	} catch (IOException e) {
+	} catch (Exception e) {
 		e.printStackTrace();
 	}
 	  
@@ -142,6 +147,17 @@ public class WebSocketController {
 
   public void sendMessage(String message) throws IOException {
     this.session.getBasicRemote().sendText(message);
+    //this.session.getAsyncRemote().sendText(message);
+  }
+  
+  /**
+   * 发送object 类型数据
+   * @param message
+   * @throws IOException
+   */
+  public void sendMessageObj(Object message) throws Exception {
+//	  getAsyncRemote()和getBasicRemote()确实是异步与同步的区别，
+    this.session.getBasicRemote().sendObject(message);
     //this.session.getAsyncRemote().sendText(message);
   }
 
@@ -174,4 +190,28 @@ public class WebSocketController {
   public static synchronized void subOnlineCount() {
     WebSocketController.onlineCount--;
   }
+  
+  /**
+   * 将 map 转换成json
+   * @param map
+   * @return
+   */
+  public String MapToJson(Map<String, Object> map) {
+	  String jsonStr = "{\"\":\"\"}";
+	  String json = "{";
+	  boolean isFirst = true;
+	  for (String key : map.keySet()) {
+		  Object value = map.get(key);
+		  if (isFirst) {
+			  isFirst = false;
+			  json += "\"" + key + "\":\"" + value + "\"";
+		  } else {
+			  json += ",\"" + key + "\":\"" + value + "\"";
+		  }
+	  }
+	  json += "}";
+	  log.info("MapToJson 转换好的json=" + json);
+	  return json;
+  }
+  
 }

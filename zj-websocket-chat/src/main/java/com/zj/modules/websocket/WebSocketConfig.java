@@ -25,6 +25,7 @@ public class WebSocketConfig extends Configurator {
       //关键操作
       if (user != null) {
     	  sec.getUserProperties().put("userId", user.getId());
+    	  sec.getUserProperties().put("user", user);
       }
       sec.getUserProperties().put("sessionId", httpSession.getId());
       System.out.println("获取到的SessionID：" + httpSession.getId());

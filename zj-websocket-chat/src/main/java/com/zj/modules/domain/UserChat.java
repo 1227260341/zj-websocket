@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author zhouzhenjang123
  * @since 2018-08-11
  */
-public class UserChat {
+public class UserChat implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,27 @@ public class UserChat {
     private String modifyUser;
 
 
-    public Integer getId() {
+    public UserChat() {
+		super();
+	}
+
+	public UserChat(Integer id, Integer userId, String userName, Integer objectId, String message, Integer type,
+			String validFlag, Date makeTime, String makeUser, Date modifyTime, String modifyUser) {
+		super();
+		this.id = id;
+		this.userId = userId;
+		this.userName = userName;
+		this.objectId = objectId;
+		this.message = message;
+		this.type = type;
+		this.validFlag = validFlag;
+		this.makeTime = makeTime;
+		this.makeUser = makeUser;
+		this.modifyTime = modifyTime;
+		this.modifyUser = modifyUser;
+	}
+
+	public Integer getId() {
         return id;
     }
 

@@ -33,7 +33,7 @@ public class UserController {
 	private UserChatMapper userChatMapper;
 	
 	@RequestMapping("/login")
-	public Object bb() {
+	public Object login() {
 		String userName = request.getParameter("userName");
 		String password = request.getParameter("password");
 		Map returnMap = new HashMap<>();
