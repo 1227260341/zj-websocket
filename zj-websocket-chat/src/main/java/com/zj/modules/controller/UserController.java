@@ -200,6 +200,23 @@ public class UserController {
 		return returnMap;
 	}
 	
+	/**
+	 * 注销（退出）
+	 * @param objectId
+	 * @return
+	 */
+	@RequestMapping("/signOut")
+	public Object signOut() {
+		Map returnMap = new HashMap<>();
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("loginUser", null);
+		
+		returnMap.put("code", 0);
+		returnMap.put("message", "退出成功！");
+		return returnMap;
+	}
+	
 	
 	
 	

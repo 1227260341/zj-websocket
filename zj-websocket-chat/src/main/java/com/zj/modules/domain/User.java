@@ -27,9 +27,18 @@ public class User {
     private String makeUser;
     private Date modifyTime;
     private String modifyUser;
+    private String head;
 
 
-    public Integer getId() {
+    public String getHead() {
+		return head;
+	}
+
+	public void setHead(String head) {
+		this.head = head;
+	}
+
+	public Integer getId() {
         return id;
     }
 

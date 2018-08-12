@@ -28,9 +28,18 @@ public class UserChat implements Serializable{
     private String makeUser;
     private Date modifyTime;
     private String modifyUser;
+    private String head;
 
 
-    public UserChat() {
+    public String getHead() {
+		return head;
+	}
+
+	public void setHead(String head) {
+		this.head = head;
+	}
+
+	public UserChat() {
 		super();
 	}
 

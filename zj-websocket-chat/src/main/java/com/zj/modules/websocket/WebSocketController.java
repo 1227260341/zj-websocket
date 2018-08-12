@@ -115,7 +115,9 @@ public class WebSocketController {
 		  sendMessage.put("type", type);
 		  sendMessage.put("sendUserId", userId);//发送的对象id（即接受消息的人）
 		  sendMessage.put("sendUserName", sendUser.getUserName());
+		  sendMessage.put("sendUserHead", sendUser.getHead());
 		  sendMessage.put("message", content);
+		  
 		  if (type != 1) {//说明是群发
 			  
 		  } else {//好友消息实现

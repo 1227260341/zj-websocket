@@ -9,6 +9,11 @@
     		margin:0px;
     	}
     	
+    	#welcome img{
+    		height:50px;
+    		width:50px;
+    		float:right;
+    	}
     	
     	#friends, #strangers {
     		width:320px;
@@ -128,6 +133,7 @@
     		height: 50px;
     		width: 50px;
     		float: left;
+    		border-radius:25px;
     	}
     	
     	.users .item div{
@@ -154,7 +160,9 @@
 
 <body style="background-image:url(./img/b21c8701a18b87d6ab1de0240c0828381f30fdaa.jpg)">
 <div id="welcome" style="background: rgb(238, 238, 238); padding: 5px 10px; border: 1px solid rgb(204, 204, 204);
- border-image: none;font-size: 35px;    line-height: 50px;    text-align: center;height: 50px;">chat</div>
+ border-image: none;font-size: 35px;    line-height: 50px;    text-align: center;height: 50px;">chat
+ <img alt="退出"  src="/img/signOut.jpg" onclick="signOut()">
+ </div>
  
 <div>
 	<div id="strangers" class="users">
@@ -225,6 +233,15 @@
 <script type="text/javascript">
     
     var uid = sessionStorage.getItem("userId");
+    var loginUser = sessionStorage.getItem("user");
+    if (loginUser == null) {//说明登陆超时
+    	setTimeout(function(e){
+    		alert("登入超时，请重新登陆！");
+    		location.href = "/index.html";
+    	},2000);
+    }
+    loginUser = JSON.parse(loginUser);
+    
     console.log("当前登陆人id：" + uid);
     
     $(document).ready(function() {
@@ -246,7 +263,6 @@
     
     //获取陌生人
     function getStrange() {
-    
     	$.ajax({
 			url:"/user/getStranger",
 			type:"GET",
@@ -265,8 +281,12 @@
 					//实现陌生人列表
 					for(var i = 0; i < res.data.length; i ++) {
 						var item = res.data[i];
+						var head = "/img/timg.jpg";
+						if (item.head != null && item.head != "") {
+							head = item.head;
+						}
 						var html = "<div class='item' onclick='addStranger("+ item.id +")'>";
-						html += "<img src='/img/timg.jpg'>";
+						html += "<img src='"+ head +"'>";
 						html += "<div >";
 						html += "<p>"+ item.userName +"</p>";
 						html += "<p class='p_content'>这个人什么都没说</p>";
@@ -307,8 +327,12 @@
 					
 					for(var i = 0; i < res.data.length; i ++) {
 						var item = res.data[i];
+						var head = "/img/timg.jpg";
+						if (item.head != null && item.head != "") {
+							head = item.head;
+						}
 						var html = "<div class='item' onclick='click1("+ item.id +", \""+ item.userName +"\")'  ondblclick='dblclick("+ item.id +", \""+ item.userName +"\")' >";
-						html += "<img src='/img/timg.jpg'>";
+						html += "<img src='"+ head +"'>";
 						html += "<div>";
 						html += "<p>"+ item.userName +"</p>";
 						html += "<p class='p_content'>猜猜我是谁！</p>";
@@ -407,7 +431,7 @@
     var objectId = "";
     var openNew = true;//默认为true 是初始页面时也未打开页面，或打开的第一个也是new的窗口
     //聊天
-    function chatWithFriend(id, userName, e) {
+    function chatWithFriend(id, userName,e) {
     	//e.stopPropagation();
 		//e.preventDefault(); 
     	console.log("----chatWithFriend--------聊天对象id=" + id);
@@ -485,11 +509,12 @@
     	}
     	
 		var sendUserId = data.sendUserId;//发送消息过来的id
+		
 		if (openNew && objectId != sendUserId) {//说明打开了 和其他人聊天的窗口 则接入其他的消息 提醒，但不渲染上去
 			alert("少年你收到了一条消息！");
 			return;
 		}
-    	renderOtherHtml(data.message);
+    	renderOtherHtml(data.message, data.sendUserHead);
     	//将滚动条滚动之div最底部
 		$("#chats .content").scrollTop($("#chats .content")[0].scrollHeight);
     }
@@ -523,7 +548,7 @@
         $("#chats input").val("");
 		
 		//渲染是消息
-        renderMyselfHtml(content);
+        renderMyselfHtml(content, loginUser.head);
 		
       	//将滚动条滚动之div最底部
 		$("#chats .content").scrollTop($("#chats .content")[0].scrollHeight);
@@ -565,9 +590,9 @@
 					for (var i = 0; i < data.length; i ++) {
 						var item = data[i];
 						if (item.userId == uid) {//说明是本人
-							renderMyselfHtml(item.message);
+							renderMyselfHtml(item.message, item.head);
 						} else {//非本人
-							renderOtherHtml(item.message);
+							renderOtherHtml(item.message, item.head);
 						}
 					}
 					
@@ -582,10 +607,13 @@
     }
     
     //渲染其他人消息
-    function renderOtherHtml(message) {
+    function renderOtherHtml(message, head) {
+    	if (head == null || head == "") {
+    		head = "/img/timg.jpg";
+    	}
     	var html = "<div class='other'>";
 		html += "<div>";
-		html += "<img src='/img/timg.jpg'>";
+		html += "<img src='"+ head +"'>";
 		html += "<p>" + message + "</p>";
 		html += "</div>";
 		html += "</div>";
@@ -593,15 +621,41 @@
     }
     
   	//渲染自己的消息
-    function renderMyselfHtml(message) {
+    function renderMyselfHtml(message, head) {
     	 //自身发的消息先 渲染上去
+    	if (head == null || head == "") {
+    		head = "/img/timg.jpg";
+    	}
         var html = "<div class='myself'>";
 		html += "<div>";
-		html += "<img src='/img/timg.jpg'>";
+		html += "<img src='"+ head +"'>";
 		html += "<p>" + message + "</p>";
 		html += "</div>";
 		html += "</div>";
 		$("#chats .content").append(html);
+    }
+  	
+  	//注销 退出
+    function signOut() {
+    	console.log("退出");
+    	
+    	if (!confirm("是否确定退出？")) {
+    		return ;
+    	}
+    	
+    	$.ajax({
+			url:"/user/signOut",
+			type:"GET",
+			//data:params,
+			dataType:"json",
+			success:function(res) {
+				if(res.code == 0) {
+					location.href = "/index.html";		
+				} else {
+					alert(res.message);
+				}
+			}
+		});
     }
     
 </script>
