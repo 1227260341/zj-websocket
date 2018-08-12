@@ -307,7 +307,7 @@
 					
 					for(var i = 0; i < res.data.length; i ++) {
 						var item = res.data[i];
-						var html = "<div class='item' onclick='click1("+ item.id +")'  ondblclick='dblclick("+ item.id +", \""+ item.userName +"\")' >";
+						var html = "<div class='item' onclick='click1("+ item.id +", \""+ item.userName +"\")'  ondblclick='dblclick("+ item.id +", \""+ item.userName +"\")' >";
 						html += "<img src='/img/timg.jpg'>";
 						html += "<div>";
 						html += "<p>"+ item.userName +"</p>";
@@ -356,13 +356,13 @@
     
     var time = null;
 	//单击事件
-	function click1(id){
+	function click1(id, userName){
 		//取消上次延时未执行的方法
 		clearTimeout(time);
 		//设置延时300ms
 		time = setTimeout(function(){
 			//在此写单击事件要执行的代码
-			delFriend(id);
+			chatWithFriend(id, userName);
 		},300);
 	}
 	 
@@ -372,7 +372,7 @@
 		clearTimeout(time);
 		//下面写双击事件要执行的代码
 		console.log("这是双击");
-		chatWithFriend(id, userName);
+		delFriend(id);
 		
 	}
     
@@ -490,7 +490,8 @@
 			return;
 		}
     	renderOtherHtml(data.message);
-        
+    	//将滚动条滚动之div最底部
+		$("#chats .content").scrollTop($("#chats .content")[0].scrollHeight);
     }
 
     //关闭连接
