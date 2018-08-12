@@ -14,7 +14,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, group_id AS groupId, user_id AS userId, valid_flag AS validFlag, make_time AS makeTime, make_user AS makeUser, modify_time AS modifyTime, modify_user AS modifyUser
+        id, group_id AS groupId, user_id AS userId,type, valid_flag AS validFlag, make_time AS makeTime, make_user AS makeUser, modify_time AS modifyTime, modify_user AS modifyUser
     </sql>
 
 	<select id="queryByPage" parameterType="com.zj.modules.domain.GroupUser" resultType="com.zj.modules.domain.GroupUser" useCache="false">
@@ -62,12 +62,11 @@
 	    <if test="userId != null" >
 			user_id,
 		</if>
-	    <if test="validFlag != null" >
-			valid_flag,
+		<if test="type != null" >
+			type,
 		</if>
-	    <if test="makeTime != null" >
-			make_time,
-		</if>
+		valid_flag,
+		make_time,
 	    <if test="makeUser != null" >
 			make_user,
 		</if>
@@ -88,12 +87,11 @@
 		<if test="userId != null" >
 			#{userId,jdbcType=VARCHAR},
 		</if>
-		<if test="validFlag != null" >
-			#{validFlag,jdbcType=VARCHAR},
+		<if test="type != null" >
+			#{type},
 		</if>
-		<if test="makeTime != null" >
-			#{makeTime,jdbcType=VARCHAR},
-		</if>
+		'Y',
+		now(),
 		<if test="makeUser != null" >
 			#{makeUser,jdbcType=VARCHAR},
 		</if>

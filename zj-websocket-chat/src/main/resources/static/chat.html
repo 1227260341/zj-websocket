@@ -9,10 +9,15 @@
     		margin:0px;
     	}
     	
-    	#welcome img{
+    	#welcome .off{
     		height:50px;
     		width:50px;
     		float:right;
+    	}
+    	#welcome .addGroup{
+    		height:50px;
+    		width:50px;
+    		float:left;
     	}
     	
     	#friends, #strangers {
@@ -152,16 +157,22 @@
     		color: gray;
     	}
     	
-    	
+    	.users .item .g_img {
+    		float:right;
+    	}
     	
     	
     </style>
+    <script src="/jquery/jquery.min.js?v=2.1.4"></script>
+    <!-- <link rel="stylesheet" href="/js/layui/css/layui.css"> -->
+    <script src="/js/layui/layui.all.js"></script>
 </head>
 
 <body style="background-image:url(./img/b21c8701a18b87d6ab1de0240c0828381f30fdaa.jpg)">
 <div id="welcome" style="background: rgb(238, 238, 238); padding: 5px 10px; border: 1px solid rgb(204, 204, 204);
  border-image: none;font-size: 35px;    line-height: 50px;    text-align: center;height: 50px;">chat
- <img alt="退出"  src="/img/signOut.jpg" onclick="signOut()">
+ <img class="addGroup" title="添加群"  src="/img/add.jpg" onclick="addGroup()">
+ <img class="off" title="退出"  src="/img/signOut.jpg" onclick="signOut()">
  </div>
  
 <div>
@@ -229,7 +240,6 @@
 </div> -->
 </body>
 
-<script src="/jquery/jquery.min.js?v=2.1.4"></script>
 <script type="text/javascript">
     
     var uid = sessionStorage.getItem("userId");
@@ -315,32 +325,49 @@
 			dataType:"json",
 			success:function(res) {
 				if(res.code == 0) {
+					$("#friends .items").html("");
 					console.log("获取成功！");
 					var userList = res.data;
-					if (userList == null){
-						return ;
-					}
-					
-					$("#friends .items").html("");
-					
-					//实现好友列表
-					
-					for(var i = 0; i < res.data.length; i ++) {
-						var item = res.data[i];
-						var head = "/img/timg.jpg";
-						if (item.head != null && item.head != "") {
-							head = item.head;
+					if (userList != null && userList.length > 0){
+						//实现好友列表
+						for(var i = 0; i < res.data.length; i ++) {
+							var item = res.data[i];
+							var head = "/img/timg.jpg";
+							if (item.head != null && item.head != "") {
+								head = item.head;
+							}
+							var html = "<div class='item' onclick='click1("+ item.id +", \""+ item.userName +"\")'  ondblclick='dblclick("+ item.id +", \""+ item.userName +"\")' >";
+							html += "<img src='"+ head +"'>";
+							html += "<div>";
+							html += "<p>"+ item.userName +"</p>";
+							html += "<p class='p_content'>猜猜我是谁！</p>";
+							html += "</div>";
+							html += "</div>";
+							
+							$("#friends .items").append(html);
 						}
-						var html = "<div class='item' onclick='click1("+ item.id +", \""+ item.userName +"\")'  ondblclick='dblclick("+ item.id +", \""+ item.userName +"\")' >";
-						html += "<img src='"+ head +"'>";
-						html += "<div>";
-						html += "<p>"+ item.userName +"</p>";
-						html += "<p class='p_content'>猜猜我是谁！</p>";
-						html += "</div>";
-						html += "</div>";
-						
-						$("#friends .items").append(html);
 					}
+					
+					//渲染上群组
+					var groupList = res.group;
+					if (groupList != null && groupList.length > 0) {
+						//实现群组
+						for(var i = 0; i < groupList.length; i ++) {
+							var item = groupList[i];
+							var head = "/img/group.jpg";
+							var html = "<div class='item' onclick='clickGroup("+ item.id +", \""+ item.name +"\")'  ondblclick='dblclickGroup("+ item.id +", \""+ item.name +"\")' >";
+							html += "<img src='"+ head +"'>";
+							html += "<div>";
+							html += "<p>"+ item.name +"</p>";
+							html += "<p class='p_content'>这是正规群！</p>";
+							html += "</div>";
+							html += "<img class='g_img' onclick='addGroupUser("+ item.id +", event)' src='/img/add.jpg'>";
+							html += "</div>";
+							
+							$("#friends .items").append(html);
+						}
+					}
+					
 				} else {
 					alert(res.message);
 					if (res.code == 1) {//说名session 过期则需要重新登录
@@ -397,6 +424,28 @@
 		//下面写双击事件要执行的代码
 		console.log("这是双击");
 		delFriend(id);
+		
+	}
+	
+	var timeGroup = null;
+	//单击事件
+	function clickGroup(id, name){
+		//取消上次延时未执行的方法
+		clearTimeout(timeGroup);
+		//设置延时300ms
+		time = setTimeout(function(){
+			//在此写单击事件要执行的代码
+			chatWithFriend(id, userName);
+		},300);
+	}
+	 
+	//双击事件
+	function dblclickGroup(id, name){
+		//取消上次延时未执行的方法
+		clearTimeout(time);
+		//下面写双击事件要执行的代码
+		console.log("这是双击");
+		delGroup(id);
 		
 	}
     
@@ -657,6 +706,45 @@
 			}
 		});
     }
+  	
+  	//添加群-该操作只能是管理员 才可以创建
+  	function addGroup() {
+  		layer.open({
+  		  type: 2,
+  		  title: '添加群',
+  		  shadeClose: true,
+  		  shade: 0.8,
+  		  area: ['300px', '210px'],
+  		  content: '/view/addGroup.html', //iframe的url
+  		  /* //只有当点击confirm框的确定时，该层才会关闭
+          cancel: function(index){ 
+            if(confirm('确定要关闭么')){
+              layer.close(index);
+            }
+            return false; 
+          } */
+  		}); 
+  	}
+  	
+  	//添加群组成员
+  	function addGroupUser(id, e) {
+  		e.preventDefault();
+  		e.stopPropagation();
+  		
+  		layer.open({
+    		  type: 2,
+    		  title: '设追群成员',
+    		  shadeClose: true,
+    		  shade: 0.8,
+    		  area: ['700px', '460px'],
+    		  content: '/view/addGroupUser.html?groupId=' + id, //iframe的url
+    		}); 
+  		
+  	}
+  	
+
+
+
     
 </script>
 </html>

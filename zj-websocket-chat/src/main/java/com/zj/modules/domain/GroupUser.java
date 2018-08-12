@@ -25,9 +25,18 @@ public class GroupUser {
     private String makeUser;
     private Date modifyTime;
     private String modifyUser;
+    private Integer type;
 
 
-    public Integer getId() {
+    public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getId() {
         return id;
     }
 

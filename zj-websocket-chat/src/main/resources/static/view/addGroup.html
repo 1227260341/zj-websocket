@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>My WebSocket</title>
+	<style>
+	
+		.submit{
+			height: 30px;
+		    width: 80px;
+		}
+	
+	</style>
+	
+	<script src="../jquery/jquery.min.js?v=2.1.4"></script>
+	<script src="../js/layui/layui.all.js"></script>
+	
+</head>
+<body id="body"  >
+
+	<div class="content">
+		<div>
+			群&nbsp;&nbsp;&nbsp;名：
+			<input class="name" placeholder="请输入群名"/>
+		</div>
+		<div>
+			群介绍：
+		</div>
+		<div>
+			<textarea class="introduce" rows="4" cols="30" placeholder="请输入群名"></textarea>
+		</div>
+		<div><button class="submit" onclick="submit()">确定</button></div>
+	</div>
+
+
+
+<script>
+	
+	//添加群
+	function submit() {
+		var name = $(".name").val();
+		var introduce = $(".introduce").val();
+		if (name == null || name == "") {
+			layer.msg("群名不能为空！");
+			return ;
+		}
+		if (introduce == null || introduce == "") {
+			layer.msg("群介绍不能为空！");
+			return ;
+		}
+		
+		var params = {
+			name:name,
+			introduce:introduce
+		}
+		
+		$.ajax({
+			url:"/user/addGroup",
+			type:"GET",
+			data:params,
+			dataType:"json",
+			success:function(res) {
+				if(res.code == 0) {
+					layer.msg("添加成功！");
+					var index = parent.layer.getFrameIndex(window.name);
+					parent.layer.close(index);	
+					parent.getFriends();
+				} else {
+					alert(res.message);
+				}
+			}
+		});
+		
+	}
+	
+</script>
+
+</body>
+</html>

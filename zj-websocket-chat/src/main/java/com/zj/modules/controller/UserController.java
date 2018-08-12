@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zj.modules.domain.FriendUser;
+import com.zj.modules.domain.Group;
+import com.zj.modules.domain.GroupUser;
 import com.zj.modules.domain.User;
 import com.zj.modules.domain.UserChat;
 import com.zj.modules.mapper.FriendUserMapper;
+import com.zj.modules.mapper.GroupMapper;
+import com.zj.modules.mapper.GroupUserMapper;
 import com.zj.modules.mapper.UserChatMapper;
 import com.zj.modules.mapper.UserMapper;
 
@@ -31,6 +35,10 @@ public class UserController {
 	private HttpServletRequest request;
 	@Resource
 	private UserChatMapper userChatMapper;
+	@Resource
+	private GroupMapper groupMapper;
+	@Resource
+	private GroupUserMapper groupUserMapper;
 	
 	@RequestMapping("/login")
 	public Object login() {
@@ -95,8 +103,11 @@ public class UserController {
 		
 		List<User> friends = userMapper.getFriends(loginUser.getId());
 		
+		List<Group> groups = groupUserMapper.getGroup(loginUser.getId());
+		
 		returnMap.put("code", 0);
 		returnMap.put("data", friends);
+		returnMap.put("group", groups);
 		returnMap.put("message", "获取好友列表成功！");
 		return returnMap;
 	}
@@ -218,7 +229,94 @@ public class UserController {
 	}
 	
 	
+	@RequestMapping("/addGroup")
+	public Object addGroup(Group group) {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		group.setMakeUser(loginUser.getId() + "");
+		groupMapper.add(group);
+		//同时把自己加入群里面
+		GroupUser gu = new GroupUser();
+		gu.setGroupId(group.getId());
+		gu.setUserId(loginUser.getId());
+		gu.setType(1);//设置群主
+		groupUserMapper.add(gu);
+		
+		returnMap.put("code", 0);
+		returnMap.put("message", "添加群成功！");
+		return returnMap;
+	}
 	
+	/**
+	 * 获取未加群的用户
+	 * @param group
+	 * @return
+	 */
+	@RequestMapping("/getStrangerGroupUser")
+	public Object getStrangerGroupUser(int groupId) {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		
+		List<User> strangerUser = groupUserMapper.getStrangerGroupUser(groupId);
+		
+		returnMap.put("code", 0);
+		returnMap.put("data", strangerUser);
+		returnMap.put("message", "获取成功成功！");
+		return returnMap;
+	}
+	
+	/**
+	 * 获取群成员
+	 * @param groupId
+	 * @return
+	 */
+	@RequestMapping("/getGroupUser")
+	public Object getGroupUser(int groupId) {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		
+		List<User> groupUser = groupUserMapper.getGroupUser(groupId);
+		
+		returnMap.put("code", 0);
+		returnMap.put("data", groupUser);
+		returnMap.put("message", "获取成功成功！");
+		return returnMap;
+	}
+	
+	/**
+	 * 添加群成员
+	 * @param groupId
+	 * @return
+	 */
+	@RequestMapping("/addGroupUser")
+	public Object addGroupUser(GroupUser groupUser) {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		
+		groupUser.setMakeUser(loginUser.getId() + "");
+		groupUserMapper.add(groupUser);
+		
+		returnMap.put("code", 0);
+		returnMap.put("message", "获取成功成功！");
+		return returnMap;
+	}
+	
+	/**
+	 * 删除群友
+	 * @param groupUser
+	 * @return
+	 */
+	@RequestMapping("/deleteGroupUser")
+	public Object deleteGroupUser(int groupId, int userId) {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		
+		groupUserMapper.deleteGroupUser(groupId, userId);
+		
+		returnMap.put("code", 0);
+		returnMap.put("message", "移除成功！");
+		return returnMap;
+	}
 	
 	
 	/**

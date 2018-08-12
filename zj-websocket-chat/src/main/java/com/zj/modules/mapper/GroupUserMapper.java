@@ -6,7 +6,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import com.zj.modules.domain.Group;
 import com.zj.modules.domain.GroupUser;
+import com.zj.modules.domain.User;
 
 
 /**
@@ -69,4 +71,27 @@ public interface GroupUserMapper {
 	 */
 	public int setInvalidWithString(String id);
 	
+	@Select("SELECT g.* FROM zw_group_user gu " + 
+			"join zw_group g on g.id = gu.group_id " + 
+			"WHERE gu.user_id = #{userId} and gu.valid_flag = 'Y' " + 
+			"and g.valid_flag = 'Y' order by g.make_time;")
+	public List<Group> getGroup(@Param("userId") int userId);
+	
+	@Select("select * from zw_user u " + 
+			"where u.valid_flag = 'Y' and u.id not in ( " + 
+			"select gu.user_id from zw_group g " + 
+			"join zw_group_user gu on gu.group_id = g.id " + 
+			"where g.id = #{groupId} and g.valid_flag = 'Y' and gu.valid_flag = 'Y')")
+	public List<User> getStrangerGroupUser(@Param("groupId") int groupId);
+	
+	@Select("select u.* from zw_group g " + 
+			"join zw_group_user gu on gu.group_id = g.id " + 
+			"join zw_user u on u.id = gu.user_id " + 
+			"where g.id = #{groupId} and g.valid_flag = 'Y' and gu.valid_flag = 'Y' and u.valid_flag = 'Y'")
+	public List<User> getGroupUser(@Param("groupId") int groupId);
+	
+	
+	@Select("update zw_group_user set valid_flag = 'N' " + 
+			"where group_id = #{groupId} and user_id = #{userId}")
+	public void deleteGroupUser(@Param("groupId") int groupId, @Param("userId") int userId);
 }
