@@ -166,6 +166,10 @@ public class UserController {
 	@RequestMapping("/addChatMessage")
 	public Object addChatMessage(UserChat userChat) {
 		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		userChat.setUserId(loginUser.getId());
+		userChat.setUserName(loginUser.getUserName());
+		userChat.setMakeUser(loginUser.getUserName());
 		userChatMapper.add(userChat);
 		returnMap.put("code", 0);
 		returnMap.put("message", "入库消息成功");
@@ -177,7 +181,7 @@ public class UserController {
 	 * @param objectId
 	 * @return
 	 */
-	/*@RequestMapping("/getMessageRecord")
+	@RequestMapping("/getMessageRecord")
 	public Object getMessageRecord(int objectId) {
 		Map returnMap = new HashMap<>();
 		User loginUser = getLoginUser();
@@ -188,12 +192,13 @@ public class UserController {
 			return returnMap;
 		}
 		
-		
+		List<UserChat> messageRecord =  userChatMapper.getMessageRecord(loginUser.getId(), objectId);
 		
 		returnMap.put("code", 0);
+		returnMap.put("data", messageRecord);
 		returnMap.put("message", "删除好友成功！");
 		return returnMap;
-	}*/
+	}
 	
 	
 	

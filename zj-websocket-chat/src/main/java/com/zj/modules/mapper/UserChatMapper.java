@@ -69,6 +69,11 @@ public interface UserChatMapper {
 	 */
 	public int setInvalidWithString(String id);
 	
-	//public List<UserChat> getMessageRecord(int id);
+	@Select("select * from ( " + 
+			"select * from zw_user_chat where user_id = #{userId} and object_id = #{objectId} and valid_flag = 'Y' " + 
+			"union all " + 
+			"select * from zw_user_chat where user_id = #{objectId} and object_id = #{userId} and valid_flag = 'Y' " + 
+			") messages order by make_time asc; " )
+	public List<UserChat> getMessageRecord(@Param("userId")int userId, @Param("objectId")int objectId);
 	
 }
