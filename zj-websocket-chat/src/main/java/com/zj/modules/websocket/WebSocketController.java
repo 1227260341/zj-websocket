@@ -115,19 +115,6 @@ public class WebSocketController {
 			  if (item != null) {//未在先 则无需发送消息
 				  item.sendMessage(content);
 			  }
-			  
-			  //保存消息指数据库
-//			  UserChat userChat = new UserChat();
-//			  userChat.setUserId(userId);
-//			  userChat.setObjectId(objectId);
-//			  userChat.setMessage(content);
-//			  userChat.setType(1);//默认为好友消息
-//			  
-//			  //userChatMapper.add(userChat);
-//			  
-//			  UserService service = new UserService();		
-//			  service.addChatMessage(userChat);
-			  
 		  }
 	} catch (IOException e) {
 		e.printStackTrace();

@@ -473,28 +473,6 @@
 
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML){
-        //document.getElementById('message').innerHTML += innerHTML + '<br/>';
-    	
-        /* <div class="other">
-			<div>
-				<img src="/img/timg.jpg">
-				<p>内容</p>
-			</div>
-		</div> */
-		
-		/* <div class="myself">
-			<div>
-				<img src="/img/timg.jpg">
-				<p>内容</p>
-			</div>
-		</div> */
-		/* var html = "<div class='other'>";
-		html += "<div>";
-		html += "<img src='/img/timg.jpg'>";
-		html += "<p>" + innerHTML + "</p>";
-		html += "</div>";
-		html += "</div>";
-		$("#chats .content").append(html); */
 		
 		if (openNew) {//说明打开了 和其他人聊天的窗口 则接入其他的消息 提醒，但不渲染上去
 			
@@ -530,19 +508,12 @@
         
         //清空发送的消息
         $("#chats input").val("");
-        
-        /* //自身发的消息先 渲染上去
-        var html = "<div class='myself'>";
-		html += "<div>";
-		html += "<img src='/img/timg.jpg'>";
-		html += "<p>" + content + "</p>";
-		html += "</div>";
-		html += "</div>";
-		$("#chats .content").append(html); */
 		
 		//渲染是消息
         renderMyselfHtml(content);
 		
+      	//将滚动条滚动之div最底部
+		$("#chats .content").scrollTop($("#chats .content")[0].scrollHeight);
     }
     
     //将消息入库
