@@ -444,7 +444,7 @@
 		//设置延时300ms
 		time = setTimeout(function(){
 			//在此写单击事件要执行的代码
-			chatWithFriend(id, userName);
+			chatWithFriend(id, name, 2);
 		},300);
 	}
 	 
@@ -488,25 +488,48 @@
     
     var objectId = "";
     var openNew = true;//默认为true 是初始页面时也未打开页面，或打开的第一个也是new的窗口
+    var isGroup = 1;//1 好友消息 ，2 群
+    var sessionObjectId = "";//主要用于区分 群id 跟好友id
     //聊天
-    function chatWithFriend(id, userName,e) {
+    function chatWithFriend(id, userName, group,e) {
     	//e.stopPropagation();
 		//e.preventDefault(); 
+		var objId = "";
+		if (group == 2) {
+			isGroup = 2;
+			objId = "group_" + id;
+		} else {
+			isGroup = 1;
+			objId = "friend_" + id;
+		}
     	console.log("----chatWithFriend--------聊天对象id=" + id);
     	//显示聊天窗口
     	$("#chats").css("display", "block");
     	
-    	if (objectId != "" && objectId != id) {//说明新有开启消息
+    	
+    	if (sessionObjectId != "" && sessionObjectId != objId) {//说明新有开启消息
+    		$("#chats .content").html("");
+    		openNew = true;
+    	} else if (sessionObjectId == objId) {//说明点击的是自身(即已经展开的聊天页面)
+    		openNew = false;
+    		return ;
+    	} 
+    	/* if (objectId != "" && objectId != id) {//说明新有开启消息
     		$("#chats .content").html("");
     		openNew = true;
     	} else if (objectId == id) {//说明点击的是自身(即已经展开的聊天页面)
     		openNew = false;
     		return ;
-    	} 
+    	}  */
     	//获取以往记录数
-		getMessageRecord(id);
+		getMessageRecord(id, isGroup);
     	$("#chats .title").html(userName);
     	objectId = id;//给全局变量赋值
+    	if (isGroup == 2) {
+    		sessionObjectId = "friend_" + id;
+    	} else {
+    		sessionObjectId = "group_" + id;
+    	}
     	
     }
     
@@ -568,10 +591,18 @@
     	
 		var sendUserId = data.sendUserId;//发送消息过来的id
 		
-		if (openNew && objectId != sendUserId) {//说明打开了 和其他人聊天的窗口 则接入其他的消息 提醒，但不渲染上去
-			alert("少年你收到了一条消息！");
-			return;
+		if (data.type == 2) {//说明是群消息
+			if (openNew && objectId != data.groupId && isGroup != 2) {//说明打开了 和其他人聊天的窗口 则接入其他的消息 提醒，但不渲染上去(如：非本群组的聊天窗口 或好友聊天窗口)
+				layer.msg("少年你收到了一条来自群的消息！");
+				return;
+			}
+		} else {
+			if (openNew && objectId != sendUserId) {//说明打开了 和其他人聊天的窗口 则接入其他的消息 提醒，但不渲染上去
+				alert("少年你收到了一条消息！");
+				return;
+			}
 		}
+		
     	renderOtherHtml(data.message, data.sendUserHead);
     	//将滚动条滚动之div最底部
 		$("#chats .content").scrollTop($("#chats .content")[0].scrollHeight);
@@ -595,10 +626,27 @@
     		message:content,//此处只为对象方便接收
     		content:content,
     		objectId:objectId,
-    		type:1//1 好友， 2 群
+    		type:isGroup//1 好友， 2 群
     	}
     	//添加消息 入库
         addChatMessage(params);
+    	if (isGroup == 2) {//说明是群组 
+    		//获取到群组的用户
+    		$.ajax({
+    			url:"/user/getGroupById?groupId=" + objectId,
+    			type:"GET",
+    			data:params,
+    			dataType:"json",
+    			async:false,
+    			success:function(res) {
+    				if(res.code == 0) {
+    					params.groupUserIds = res.data;
+    				} else {
+    					alert(res.message);
+    				}
+    			}
+    		});
+    	}
     	params = JSON.stringify(params);
         websocket.send(params);
         
@@ -630,10 +678,10 @@
     }
     
     //获取聊天记录-
-    function getMessageRecord(id) {
+    function getMessageRecord(id, isGroup) {
     	//获取笑嘻嘻记录
     	$.ajax({
-			url:"/user/getMessageRecord?objectId=" + id,
+			url:"/user/getMessageRecord?objectId=" + id + "&isGroup=" + isGroup,
 			type:"GET",
 			//data:params,
 			dataType:"json",

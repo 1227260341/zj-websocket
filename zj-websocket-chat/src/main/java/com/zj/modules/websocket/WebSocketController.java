@@ -96,31 +96,55 @@ public class WebSocketController {
 	  }
 	  
 	  try {
-		  Map sendMessage = new HashMap<>();
+		  
 		  JSONObject jsonObj = JSON.parseObject(message);
 		  int type = (int) jsonObj.get("type");
 		  int objectId = (int) jsonObj.get("objectId");
 		  String content = (String) jsonObj.get("content");
+		  Object groupUserIds = jsonObj.get("groupUserIds");
 		  
 		  System.out.println("来自客户端的消息:" + content);
 		  Principal p = session.getUserPrincipal();
 		  Map sessionMap = session.getUserProperties();
 		  int userId = (int) sessionMap.get("userId");//获取到当前登陆人id
 		  User sendUser = (User) sessionMap.get("user");//获取到当前登陆人id
-		  WebSocketController item = webSocketSet.get(objectId);
-		  if (item == null) {//未在线 则无需发送消息
-			  System.out.println("不存在websocket对象，即对方不在线");
-			  return ;
-		  }
-		  sendMessage.put("type", type);
-		  sendMessage.put("sendUserId", userId);//发送的对象id（即接受消息的人）
-		  sendMessage.put("sendUserName", sendUser.getUserName());
-		  sendMessage.put("sendUserHead", sendUser.getHead());
-		  sendMessage.put("message", content);
 		  
-		  if (type != 1) {//说明是群发
+		  
+		  if (type == 2 && groupUserIds != null && groupUserIds != "") {//说明是群发
+			  String[] userIds = groupUserIds.toString().split(",");
+			  for (String groupUserId : userIds) {
+				  int groupUserIdInt = Integer.parseInt(groupUserId);
+				  if (groupUserIdInt == userId) {//是自身则无需发送消息
+					  continue ;
+				  }
+				  WebSocketController item = webSocketSet.get(Integer.parseInt(groupUserId));
+				  if (item == null) {//未在线 则无需发送消息
+					  System.out.println("不存在websocket对象，即对方不在线");
+					  continue ;
+				  }
+				  Map sendMessage = new HashMap<>();
+				  sendMessage.put("type", type);
+				  sendMessage.put("sendUserId", userId);//发送的对象id（即接受消息的人）
+				  sendMessage.put("groupId", objectId);//存入groupId
+				  sendMessage.put("sendUserName", sendUser.getUserName());
+				  sendMessage.put("sendUserHead", sendUser.getHead());
+				  sendMessage.put("message", content);
+				  item.sendMessage(MapToJson(sendMessage));
+			  }
+			  
 			  
 		  } else {//好友消息实现
+			  WebSocketController item = webSocketSet.get(objectId);
+			  if (item == null) {//未在线 则无需发送消息
+				  System.out.println("不存在websocket对象，即对方不在线");
+				  return ;
+			  }
+			  Map sendMessage = new HashMap<>();
+			  sendMessage.put("type", type);
+			  sendMessage.put("sendUserId", userId);//发送的对象id（即接受消息的人）
+			  sendMessage.put("sendUserName", sendUser.getUserName());
+			  sendMessage.put("sendUserHead", sendUser.getHead());
+			  sendMessage.put("message", content);
 			  item.sendMessage(MapToJson(sendMessage));
 		  }
 	} catch (Exception e) {

@@ -80,4 +80,12 @@ public interface UserChatMapper {
 			"			) messages order by make_time asc;" )
 	public List<UserChat> getMessageRecord(@Param("userId")int userId, @Param("objectId")int objectId);
 	
+	@Select("SELECT *, u.head FROM zw_user_chat uc " + 
+			"join zw_user u on u.id = user_id " + 
+			"	where uc.object_id = #{objectId} and uc.type = 2 " + 
+			"and uc.valid_flag = 'Y' and u.valid_flag = 'Y' " + 
+			"order by uc.make_time asc;")
+	public List<UserChat> getGroupMessageRecord(@Param("objectId")int objectId);
+	
+	
 }

@@ -94,4 +94,9 @@ public interface GroupUserMapper {
 	@Select("update zw_group_user set valid_flag = 'N' " + 
 			"where group_id = #{groupId} and user_id = #{userId}")
 	public void deleteGroupUser(@Param("groupId") int groupId, @Param("userId") int userId);
+	
+	@Select("select group_concat(user_id) userId from zw_group_user where group_id = #{groupId} and valid_flag = 'Y'")
+	public String getGroupById(@Param("groupId") int groupId);
+	
+	
 }

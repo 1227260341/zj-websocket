@@ -193,7 +193,7 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping("/getMessageRecord")
-	public Object getMessageRecord(int objectId) {
+	public Object getMessageRecord(int objectId, int isGroup) {
 		Map returnMap = new HashMap<>();
 		User loginUser = getLoginUser();
 		
@@ -203,7 +203,13 @@ public class UserController {
 			return returnMap;
 		}
 		
-		List<UserChat> messageRecord =  userChatMapper.getMessageRecord(loginUser.getId(), objectId);
+		List<UserChat> messageRecord =  null;
+		if (isGroup == 2) {
+			//此处objectId 值得是 群id 即 groupId
+			messageRecord =  userChatMapper.getGroupMessageRecord(objectId);
+		} else {
+			messageRecord =  userChatMapper.getMessageRecord(loginUser.getId(), objectId);
+		}
 		
 		returnMap.put("code", 0);
 		returnMap.put("data", messageRecord);
@@ -314,6 +320,25 @@ public class UserController {
 		groupUserMapper.deleteGroupUser(groupId, userId);
 		
 		returnMap.put("code", 0);
+		returnMap.put("message", "移除成功！");
+		return returnMap;
+	}
+	
+	/**
+	 * 获取群组用户 -并排除自身
+	 * @param groupId
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/getGroupById")
+	public Object getGroupById(int groupId) {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		
+		String groupUserIds = groupUserMapper.getGroupById(groupId);
+		
+		returnMap.put("code", 0);
+		returnMap.put("data", groupUserIds);
 		returnMap.put("message", "移除成功！");
 		return returnMap;
 	}
