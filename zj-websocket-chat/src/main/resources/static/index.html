@@ -54,6 +54,14 @@
 
 <script src="/jquery/jquery.min.js?v=2.1.4"></script>
 <script>
+
+	document.onkeydown = function(e) {
+		var keyCode = e.keyCode || e.which || e.charCode;
+        if(keyCode == 13) {
+        	$("#content button").click();
+        }
+	}
+
 	function login() {
 		var userName = $("#userName").val();
 		var password = $("#password").val();

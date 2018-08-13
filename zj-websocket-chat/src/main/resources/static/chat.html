@@ -241,16 +241,19 @@
 </body>
 
 <script type="text/javascript">
-    
     var uid = sessionStorage.getItem("userId");
     var loginUser = sessionStorage.getItem("user");
     if (loginUser == null) {//说明登陆超时
-    	setTimeout(function(e){
-    		alert("登入超时，请重新登陆！");
-    		location.href = "/index.html";
-    	},2000);
+   		alert("登入超时，请重新登陆！");
+   		location.href = "/index.html";
+   		//return ; 
     }
     loginUser = JSON.parse(loginUser);
+    //控制权限
+    if (loginUser.type != 1) {
+    	//设置群功能隐藏
+    	$(".addGroup").css("display", "none");
+    } 
     
     console.log("当前登陆人id：" + uid);
     
@@ -309,6 +312,7 @@
 					alert(res.message);
 					if (res.code == 1) {//说名session 过期则需要重新登录
 						location.href = "/index.html";
+						return ;
 					}
 				}
 			}
@@ -351,6 +355,10 @@
 					//渲染上群组
 					var groupList = res.group;
 					if (groupList != null && groupList.length > 0) {
+						var display = "";
+						if (loginUser.type != 1) {
+							display = "none";
+						}
 						//实现群组
 						for(var i = 0; i < groupList.length; i ++) {
 							var item = groupList[i];
@@ -361,7 +369,7 @@
 							html += "<p>"+ item.name +"</p>";
 							html += "<p class='p_content'>这是正规群！</p>";
 							html += "</div>";
-							html += "<img class='g_img' onclick='addGroupUser("+ item.id +", event)' src='/img/add.jpg'>";
+							html += "<img class='g_img' onclick='addGroupUser("+ item.id +", event)' src='/img/add.jpg' style='display:"+display+"'>";
 							html += "</div>";
 							
 							$("#friends .items").append(html);
@@ -372,6 +380,7 @@
 					alert(res.message);
 					if (res.code == 1) {//说名session 过期则需要重新登录
 						location.href = "/index.html";
+						return ;
 					}
 				}
 			}
