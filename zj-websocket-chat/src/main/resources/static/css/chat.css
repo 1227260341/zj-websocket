@@ -1,6 +1,10 @@
 body {
 	margin:0px;
 }
+p {
+	margin:0px;
+	padding:0px;
+}
   	
 #welcome .off{
 	height:50px;
@@ -68,9 +72,12 @@ body {
 	padding : 5px;
 	/* width:auto; display:inline-block !important; display:inline; */
 }
-
+#chats .content .myself  {
+	/* clear: both; */
+	overflow:hidden;
+}
 #chats .content .other div, #chats .content .myself div{
-	height: 46px;
+	/* height: 46px; */
 }
 
 #chats .content .other img{
@@ -83,24 +90,29 @@ body {
 }
 
 #chats .content .other div{
-	line-height: 50px;
+	line-height: 30px;
 }
 
 #chats .content .other p{
 	min-height: 46px;
 	margin:0px;
+	padding-top: 5px;
 	max-width: 340px;
+	/* border: 1px red solid;
+    margin-left: 55px; */
 	/* width:auto; display:inline-block !important; display:inline; */
 }
 
-#chats .content .myself{
-	//float: right;
-	//width:460px;
-}
+/* #chats .content .myself{
+	min-height:46px;
+	float: right;
+	width:460px;
+} */
 
 #chats .content .myself div{
 	float: right;
 	width:100%;
+	line-height:30px;
 }
 
 #chats .content .myself img {
@@ -113,9 +125,10 @@ body {
 }
 
 #chats .content .myself p{
-	height: 46px;
+	min-height: 46px;
 	display:inline;
 	float: right;
+	padding-top: 5px;
 	max-width: 340px;
 }
 
