@@ -57,6 +57,8 @@ public class UserController {
 		HttpSession session = request.getSession();
 		session.setAttribute("loginUser", user);
 		
+		System.out.println("sessionI=================" + session.getId());
+		
 		returnMap.put("code", 0);
 		returnMap.put("data", user);
 		returnMap.put("message", "登录成功！");

@@ -6,6 +6,8 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import com.zj.modules.domain.User;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
@@ -15,6 +17,7 @@ import javax.websocket.server.ServerEndpointConfig.Configurator;
 @Configuration
 public class WebSocketConfig extends Configurator {
 
+	
   @Override
   public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
     /*如果没有监听器,那么这里获取到的HttpSession是null*/
@@ -28,7 +31,7 @@ public class WebSocketConfig extends Configurator {
     	  sec.getUserProperties().put("user", user);
       }
       sec.getUserProperties().put("sessionId", httpSession.getId());
-      System.out.println("获取到的SessionID：" + httpSession.getId());
+      System.out.println("获取到的SessionID-------------：" + httpSession.getId());
     }
   }
 

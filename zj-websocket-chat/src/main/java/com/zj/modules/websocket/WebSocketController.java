@@ -14,6 +14,8 @@ import com.zj.modules.mapper.UserMapper;
 import com.zj.modules.service.UserService;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -38,6 +40,8 @@ public class WebSocketController {
 
   //与某个客户端的连接会话，需要通过它来给客户端发送数据
   private Session session;
+  
+	private HttpServletRequest request;
 
   /**
    * 连接建立成功调用的方法

@@ -1,0 +1,158 @@
+body {
+	margin:0px;
+}
+  	
+#welcome .off{
+	height:50px;
+	width:50px;
+	float:right;
+}
+#welcome .addGroup{
+	height:50px;
+	width:50px;
+	float:left;
+}
+
+#friends, #strangers {
+	width:320px;
+	height:450px;
+	border:1px solid red;
+	background-color:white;
+	float: left;
+	margin-left:50px;
+	overflow:scroll; 
+}
+
+#chats {
+	display: none;
+	width:450px;
+	height:320px;
+	border:1px solid red;
+	background-color:white;
+	float: left;
+	margin-left:80px;
+	//overflow:scroll; 
+	//overflow:auto;
+	padding-bottom:15px;
+}
+
+#chats .content{
+	height:290px;
+	overflow:auto;
+}
+#chats .userChat {
+	height: 30px;
+}
+#chats .title{
+	text-align: center;
+	height: 50px;
+	line-height: 50px;
+	font-size: 18px;
+	background-color: #0fc5ef;
+ 
+}
+#chats .userChat input{
+	height: 24px;
+	width: 360px;
+	border-radius: 10px;
+}
+#chats .userChat button{
+	height: 28px;
+	width: 76px;
+	border-radius: 10px;
+}
+
+#chats .content .other , #chats .content .myself {
+	min-height: 46px;
+	border-bottom: 1px solid #8080803b;
+	padding : 5px;
+	/* width:auto; display:inline-block !important; display:inline; */
+}
+
+#chats .content .other div, #chats .content .myself div{
+	height: 46px;
+}
+
+#chats .content .other img{
+	height: 50px;
+	width: 50px;
+	float: left;
+	border-radius: 25px;
+	border: 1px solid red;
+	margin-right:10px;
+}
+
+#chats .content .other div{
+	line-height: 50px;
+}
+
+#chats .content .other p{
+	min-height: 46px;
+	margin:0px;
+	max-width: 340px;
+	/* width:auto; display:inline-block !important; display:inline; */
+}
+
+#chats .content .myself{
+	//float: right;
+	//width:460px;
+}
+
+#chats .content .myself div{
+	float: right;
+	width:100%;
+}
+
+#chats .content .myself img {
+	height: 50px;
+	width: 50px;
+	float: right;
+	border-radius: 25px;
+	border: 1px solid red;
+	margin-left:10px;
+}
+
+#chats .content .myself p{
+	height: 46px;
+	display:inline;
+	float: right;
+	max-width: 340px;
+}
+
+.users .item {
+	height: 46px;
+	border-bottom: 1px solid #8080803b;
+	padding : 5px;
+}
+
+.users .title {
+	text-align: center;
+	font-size: 18px;
+}
+
+.users .item img{
+	height: 50px;
+	width: 50px;
+	float: left;
+	border-radius:25px;
+}
+
+.users .item div{
+	margin-left: 10px;
+	float: left;
+}
+
+.users .item div p{
+	margin:0px;
+	height: 25px;
+	
+}
+
+.users .item div .p_content{
+	font-size:15px;
+	color: gray;
+}
+
+.users .item .g_img {
+	float:right;
+}
