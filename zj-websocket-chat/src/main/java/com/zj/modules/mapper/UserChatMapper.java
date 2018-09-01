@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.zj.modules.domain.UserChat;
 
 
@@ -77,15 +79,15 @@ public interface UserChatMapper {
 			"select uc.*, u.head from zw_user_chat uc " + 
 			"join zw_user u on u.id = uc.user_id " + 
 			"where uc.user_id = #{objectId} and uc.object_id = #{userId} and uc.valid_flag = 'Y' and u.valid_flag = 'Y' " + 
-			"			) messages order by make_time asc;" )
-	public List<UserChat> getMessageRecord(@Param("userId")int userId, @Param("objectId")int objectId);
+			"			) messages order by make_time desc" )
+	public List<UserChat> getMessageRecord(Page  page, @Param("userId")int userId, @Param("objectId")int objectId);
 	
 	@Select("SELECT *, u.head FROM zw_user_chat uc " + 
 			"join zw_user u on u.id = user_id " + 
 			"	where uc.object_id = #{objectId} and uc.type = 2 " + 
 			"and uc.valid_flag = 'Y' and u.valid_flag = 'Y' " + 
-			"order by uc.make_time asc;")
-	public List<UserChat> getGroupMessageRecord(@Param("objectId")int objectId);
+			"order by uc.make_time desc")
+	public List<UserChat> getGroupMessageRecord(Page page, @Param("objectId")int objectId);
 	
 	
 }

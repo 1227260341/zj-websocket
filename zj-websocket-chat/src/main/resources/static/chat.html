@@ -536,7 +536,7 @@
 					}
 					
 					//渲染上数据
-					for (var i = 0; i < data.length; i ++) {
+					for (var i = data.length - 1; i >= 0; i --) {
 						var item = data[i];
 						if (item.userId == uid) {//说明是本人
 							renderMyselfHtml(item.message, item.head);

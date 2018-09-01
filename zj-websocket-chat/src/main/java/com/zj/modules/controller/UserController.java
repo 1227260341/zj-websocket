@@ -1,5 +1,6 @@
 package com.zj.modules.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.zj.modules.domain.FriendUser;
 import com.zj.modules.domain.Group;
 import com.zj.modules.domain.GroupUser;
@@ -21,6 +25,7 @@ import com.zj.modules.mapper.GroupMapper;
 import com.zj.modules.mapper.GroupUserMapper;
 import com.zj.modules.mapper.UserChatMapper;
 import com.zj.modules.mapper.UserMapper;
+import com.zj.modules.util.FileUtil;
 
 
 @RestController
@@ -39,6 +44,33 @@ public class UserController {
 	private GroupMapper groupMapper;
 	@Resource
 	private GroupUserMapper groupUserMapper;
+	
+	/**
+	 * 注册用户
+	 * @return
+	 */
+	@RequestMapping("/register")
+	public Object register(@RequestParam("file") MultipartFile file, User user) {
+//		String userName = request.getParameter("userName");
+//		String password = request.getParameter("password");
+		Map returnMap = new HashMap<>();
+		
+		try {
+			String filePath = FileUtil.uploadFileToLocal(file, "head", request);
+			user.setHead(filePath);
+			user.setType("0");
+			userMapper.add(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnMap.put("code", -1);
+			returnMap.put("message", "注册失败！");
+			return returnMap;
+		}
+		
+		returnMap.put("code", 0);
+		returnMap.put("message", "注册成功！");
+		return returnMap;
+	}
 	
 	@RequestMapping("/login")
 	public Object login() {
@@ -205,17 +237,28 @@ public class UserController {
 			return returnMap;
 		}
 		
+		//EntityWrapper ew = new EntityWrapper();
+//		Page page=new Page(1,2);
+//		ew.setEntity(new Bulletin());
+//		//ew.where("name = {0}",name).andNew("age > {0}",age).orderBy("age");
+////		List<Group> list = bulletinService.selectList(ew);
+//		Page page2 = bulletinService.selectPage(page, ew);
+		
+		Page<UserChat> page = new Page<UserChat>(1,5);
+//		List<String> descs = new ArrayList<>();
+//		descs.add("create_time");
+//		page.setDescs(descs);
 		List<UserChat> messageRecord =  null;
 		if (isGroup == 2) {
 			//此处objectId 值得是 群id 即 groupId
-			messageRecord =  userChatMapper.getGroupMessageRecord(objectId);
+			messageRecord =  userChatMapper.getGroupMessageRecord(page, objectId);
 		} else {
-			messageRecord =  userChatMapper.getMessageRecord(loginUser.getId(), objectId);
+			messageRecord =  userChatMapper.getMessageRecord(page, loginUser.getId(), objectId);
 		}
-		
 		returnMap.put("code", 0);
+		returnMap.put("page", page);
 		returnMap.put("data", messageRecord);
-		returnMap.put("message", "删除好友成功！");
+		returnMap.put("message", "获取消息成功！");
 		return returnMap;
 	}
 	

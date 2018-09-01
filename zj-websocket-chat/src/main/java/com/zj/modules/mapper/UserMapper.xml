@@ -74,15 +74,14 @@
 <if test="actualName != null" >
 			actual_name,
 		</if>
+		<if test="head != null" >
+			head,
+		</if>
 <if test="type != null" >
 			type,
 		</if>
-<if test="validFlag != null" >
-			valid_flag,
-		</if>
-<if test="makeTime != null" >
-			make_time,
-		</if>
+		valid_flag,
+		make_time,
 <if test="makeUser != null" >
 			make_user,
 		</if>
@@ -106,15 +105,14 @@
 		<if test="actualName != null" >
 			#{actualName,jdbcType=VARCHAR},
 		</if>
+		<if test="head != null" >
+			#{head,jdbcType=VARCHAR},
+		</if>
 		<if test="type != null" >
 			#{type,jdbcType=VARCHAR},
 		</if>
-		<if test="validFlag != null" >
-			#{validFlag,jdbcType=VARCHAR},
-		</if>
-		<if test="makeTime != null" >
-			#{makeTime,jdbcType=VARCHAR},
-		</if>
+		'Y',
+		now(),
 		<if test="makeUser != null" >
 			#{makeUser,jdbcType=VARCHAR},
 		</if>
