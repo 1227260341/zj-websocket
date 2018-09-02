@@ -131,7 +131,7 @@ public class WebSocketController {
 				  sendMessage.put("sendUserId", userId);//发送的对象id（即接受消息的人）
 				  sendMessage.put("groupId", objectId);//存入groupId
 				  sendMessage.put("sendUserName", sendUser.getUserName());
-				  sendMessage.put("sendUserHead", sendUser.getHead());
+				  sendMessage.put("sendUserHead", sendUser.getHeadUrl());
 				  sendMessage.put("message", content);
 				  item.sendMessage(MapToJson(sendMessage));
 			  }
@@ -147,7 +147,7 @@ public class WebSocketController {
 			  sendMessage.put("type", type);
 			  sendMessage.put("sendUserId", userId);//发送的对象id（即接受消息的人）
 			  sendMessage.put("sendUserName", sendUser.getUserName());
-			  sendMessage.put("sendUserHead", sendUser.getHead());
+			  sendMessage.put("sendUserHead", sendUser.getHeadUrl());
 			  sendMessage.put("message", content);
 			  item.sendMessage(MapToJson(sendMessage));
 		  }

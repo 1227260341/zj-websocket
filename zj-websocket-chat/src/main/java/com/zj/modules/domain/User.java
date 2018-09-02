@@ -28,9 +28,18 @@ public class User {
     private Date modifyTime;
     private String modifyUser;
     private String head;
+    private String headUrl;
 
 
-    public String getHead() {
+    public String getHeadUrl() {
+		return headUrl;
+	}
+
+	public void setHeadUrl(String headUrl) {
+		this.headUrl = headUrl;
+	}
+
+	public String getHead() {
 		return head;
 	}
 

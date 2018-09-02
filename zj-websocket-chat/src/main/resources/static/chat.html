@@ -138,7 +138,7 @@
 						var item = res.data[i];
 						var head = "/img/timg.jpg";
 						if (item.head != null && item.head != "") {
-							head = item.head;
+							head = item.headUrl;
 						}
 						var html = "<div class='item' onclick='addStranger("+ item.id +")'>";
 						html += "<img src='"+ head +"'>";
@@ -180,7 +180,7 @@
 							var item = res.data[i];
 							var head = "/img/timg.jpg";
 							if (item.head != null && item.head != "") {
-								head = item.head;
+								head = item.headUrl;
 							}
 							var html = "<div class='item' onclick='click1("+ item.id +", \""+ item.userName +"\")'  ondblclick='dblclick("+ item.id +", \""+ item.userName +"\")' >";
 							html += "<img src='"+ head +"'>";
@@ -497,7 +497,7 @@
         $("#chats input").val("");
 		
 		//渲染是消息
-        renderMyselfHtml(content, loginUser.head);
+        renderMyselfHtml(content, loginUser.headUrl);
 		
       	//将滚动条滚动之div最底部
 		$("#chats .content").scrollTop($("#chats .content")[0].scrollHeight);

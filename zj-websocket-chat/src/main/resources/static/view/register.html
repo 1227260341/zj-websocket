@@ -169,7 +169,8 @@
 			//mimeType: "multipart/form-data",
 			success: function(res) {
 				if(res.code == 0) {
-					layer.msg("注册成功！");
+					//layer.msg("注册成功！");
+					alert("注册成功！");
 					var index = parent.layer.getFrameIndex(window.name);
 					parent.layer.close(index);	
 				} else {

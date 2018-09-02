@@ -3,7 +3,10 @@ package com.zj.modules.util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
+import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.sound.midi.MidiDevice.Info;
 
@@ -12,11 +15,17 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zj.modules.domain.FilesConfig;
+import com.zj.modules.mapper.FilesConfigMapper;
 import com.zj.modules.websocket.WebSocketController;
+import com.zj.modules.util.PropertiesUtil;
 
 public class FileUtil {
 	
 	private static final Log log = LogFactory.getLog(FileUtil.class);
+	
+	@Resource
+	private FilesConfigMapper filesConfigMapper;
 	
 	/**
 	 * 上传文件至本地
@@ -30,6 +39,14 @@ public class FileUtil {
         
 		String contentType = file.getContentType();
         String fileName = file.getOriginalFilename();
+        String type = "";
+        if (fileName != null && !"".equals(fileName)) {
+			String values[] = fileName.split("\\.");
+			if (values != null && values.length > 0) {
+				//name = values[0];
+				type = values[1];
+			}
+		}
 		
         String filePath = getProjectPath(request) +  "/files/" + foldName;
         
@@ -38,6 +55,7 @@ public class FileUtil {
             targetFile.mkdirs();    
         }       
         
+        fileName = UuidUtil.get32UUID() + "." + type;
         filePath += "/" + fileName;
         
         FileOutputStream out = new FileOutputStream(filePath);
@@ -46,10 +64,11 @@ public class FileUtil {
         out.close();
         
         log.info(filePath);
-        String path = foldName + "/" + fileName;
+        String path = "/" + foldName + "/" + fileName;
         
         return path;
     }
+	
 	
 	/**
 	 * 获取工程根目录（据对路径）

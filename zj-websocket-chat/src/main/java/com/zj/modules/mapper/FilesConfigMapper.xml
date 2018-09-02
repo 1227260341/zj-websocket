@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zj.modules.mapper.FilesConfigMapper">
+
+	<insert id="save" parameterType="com.zj.modules.domain.FilesConfig" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO files_config (
+			name,
+			type,
+			path,
+			size,
+			validFlag,
+			comment,
+			makeTime,
+			makeUser,
+			modifyTime,
+			modifyUser
+		)
+		VALUES (
+			#{name},
+			#{type},
+			#{path},
+			#{size},
+			'Y',
+			#{comment},
+			NOW(),
+			#{makeUser},
+			NOW(),
+			#{modifyUser}
+		)
+	</insert>
+		
+	<!-- <update id="update" parameterType="FilesConfig">
+		UPDATE files_config 
+		<set>
+			<if test="codeName != null">codeName = #{codeName}</if>
+			<if test="codeRemark != null">,codeRemark = #{codeRemark}</if>
+		</set>
+		WHERE
+			codeId = #{codeId}
+	</update> -->
+	
+	<update id="deleteById" parameterType="com.zj.modules.domain.FilesConfig">
+		delete from files_config WHERE id = #{id}
+	</update>
+</mapper>

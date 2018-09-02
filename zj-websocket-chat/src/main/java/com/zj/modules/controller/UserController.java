@@ -25,7 +25,9 @@ import com.zj.modules.mapper.GroupMapper;
 import com.zj.modules.mapper.GroupUserMapper;
 import com.zj.modules.mapper.UserChatMapper;
 import com.zj.modules.mapper.UserMapper;
+import com.zj.modules.service.FilesConfigService;
 import com.zj.modules.util.FileUtil;
+import com.zj.modules.util.PropertiesUtil;
 
 
 @RestController
@@ -44,6 +46,8 @@ public class UserController {
 	private GroupMapper groupMapper;
 	@Resource
 	private GroupUserMapper groupUserMapper;
+	@Resource
+	private FilesConfigService filesConfigService;
 	
 	/**
 	 * 注册用户
@@ -56,8 +60,8 @@ public class UserController {
 		Map returnMap = new HashMap<>();
 		
 		try {
-			String filePath = FileUtil.uploadFileToLocal(file, "head", request);
-			user.setHead(filePath);
+			Integer filePath = filesConfigService.upload(file, "head", request);
+			user.setHead(filePath + "");
 			user.setType("0");
 			userMapper.add(user);
 		} catch (Exception e) {
@@ -84,6 +88,11 @@ public class UserController {
 			returnMap.put("message", "登录失败，用户名或密码失败！");
 			return returnMap;
 		} 
+		
+		if (PropertiesUtil.verifyString(user.getHead())) {
+			String fileUrl = filesConfigService.getFullPathById(Integer.parseInt(user.getHead()));
+			user.setHeadUrl(fileUrl);
+		}
 		
 		//写入session
 		HttpSession session = request.getSession();
@@ -113,6 +122,15 @@ public class UserController {
 		}
 		
 		List<User> strangeUser = userMapper.getStranger(loginUser.getId());
+		if (PropertiesUtil.verifyList(strangeUser)) {
+			for (User user : strangeUser) {
+				if (PropertiesUtil.isEmptyString(user.getHead())) {
+					
+				}
+				String head = filesConfigService.getFullPathById(Integer.parseInt(user.getHead()));
+				user.setHeadUrl(head);
+			}
+		}
 		
 		returnMap.put("code", 0);
 		returnMap.put("data", strangeUser);
@@ -136,8 +154,17 @@ public class UserController {
 		}
 		
 		List<User> friends = userMapper.getFriends(loginUser.getId());
-		
 		List<Group> groups = groupUserMapper.getGroup(loginUser.getId());
+		
+		if (PropertiesUtil.verifyList(friends)) {
+			for (User user : friends) {
+				if (PropertiesUtil.isEmptyString(user.getHead())) {
+					
+				}
+				String head = filesConfigService.getFullPathById(Integer.parseInt(user.getHead()));
+				user.setHeadUrl(head);
+			}
+		}
 		
 		returnMap.put("code", 0);
 		returnMap.put("data", friends);
@@ -255,6 +282,17 @@ public class UserController {
 		} else {
 			messageRecord =  userChatMapper.getMessageRecord(page, loginUser.getId(), objectId);
 		}
+		
+		if (PropertiesUtil.verifyList(messageRecord)) {
+			for (UserChat user : messageRecord) {
+				if (PropertiesUtil.isEmptyString(user.getHead())) {
+					
+				}
+				String head = filesConfigService.getFullPathById(Integer.parseInt(user.getHead()));
+				user.setHead(head);
+			}
+		}
+		
 		returnMap.put("code", 0);
 		returnMap.put("page", page);
 		returnMap.put("data", messageRecord);
