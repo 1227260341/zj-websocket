@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <title>Video.js直播</title>
+        <meta charset="utf-8">
+        <!-- <link href="http://vjs.zencdn.net/5.5.3/video-js.css" rel="stylesheet"> -->
+        <link href="../.././css/video/video-js.min.css" rel="stylesheet">
+        <!-- If you'd like to support IE8 -->
+        <!-- <script src="http://vjs.zencdn.net/ie8/1.1.1/videojs-ie8.min.js"></script> -->
+        <script src="../.././js/video/videojs-ie8.min.js"></script>
+    </head>
+    <body>
+        <h1>直播间</h1>
+        <video 
+            id="my-video" 
+            class="video-js" 
+            controls 
+            preload="auto"
+            width="640" 
+            height="300"
+            poster="http://ppt.downhot.com/d/file/p/2014/08/12/9d92575b4962a981bd9af247ef142449.jpg"
+            data-setup="{}">
+
+            <!-- 直播地址 -->
+            
+            <source src="rtmp://cyberplayerplay.kaywang.cn/cyberplayer/demo201711-L1" type="rtmp/flv">
+
+        </video>
+        
+        <div id="playercontainer"></div>
+		<script type="text/javascript" src="../.././js/video/cyberplayer.js"></script>
+		<script type="text/javascript">
+		    var player = cyberplayer("playercontainer").setup({
+		        width: 680,
+		        height: 448,
+		        file: "rtmp://cyberplayerplay.kaywang.cn/cyberplayer/demo201711-L1", // <—rtmp or flv直播地址
+		        fallbackfile: "http://cyberplayerplay.kaywang.cn/cyberplayer/demo201711-L1.m3u8", // <— 备用播放地址，为了手机上能进行直播，设置hls直播流
+		        autostart: true,
+		        stretching: "uniform",
+		        volume: 100,
+		        controls: true,
+		        ak: "xxxxxxxxxxxxxxxx" // 公有云平台注册即可获得accessKey
+		    });
+		</script>
+        
+
+        <!-- 引入video.js -->
+        
+        <!-- <script src="http://vjs.zencdn.net/5.5.3/video.js"></script> -->
+        <script src="../.././js/video/video.min-5.8.8.js"></script>
+
+		<!-- 设置flash路径，Video.js会在不支持html5的浏览中使用flash播放视频文件 -->
+		<!-- <script>
+		    videojs.options.flash.swf = "video-js.swf";
+		</script> -->
+
+        <!-- 自动播放 -->
+        <script type="text/javascript">
+            var myPlayer = videojs('my-video');
+            videojs("my-video").ready(function(){
+                var myPlayer = this;
+                myPlayer.play();
+            });
+        </script> 
+    </body>
+</html>
