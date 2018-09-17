@@ -254,7 +254,7 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping("/getMessageRecord")
-	public Object getMessageRecord(int objectId, int isGroup) {
+	public Object getMessageRecord(int objectId, int isGroup, Integer pageIndex, Integer pageSize) {
 		Map returnMap = new HashMap<>();
 		User loginUser = getLoginUser();
 		
@@ -264,6 +264,11 @@ public class UserController {
 			return returnMap;
 		}
 		
+		if (pageIndex == null) {
+			pageIndex = 1;
+			pageIndex = 5;
+		}
+		
 		//EntityWrapper ew = new EntityWrapper();
 //		Page page=new Page(1,2);
 //		ew.setEntity(new Bulletin());
@@ -271,7 +276,7 @@ public class UserController {
 ////		List<Group> list = bulletinService.selectList(ew);
 //		Page page2 = bulletinService.selectPage(page, ew);
 		
-		Page<UserChat> page = new Page<UserChat>(1,5);
+		Page<UserChat> page = new Page<UserChat>(pageIndex,pageSize);
 //		List<String> descs = new ArrayList<>();
 //		descs.add("create_time");
 //		page.setDescs(descs);
@@ -426,6 +431,48 @@ public class UserController {
 		return returnMap;
 	}
 	
+	@RequestMapping("/uploadBase64Pic")
+	public Object uploadBase64Pic(@RequestParam("imgDatas[]") String[] imgDatas, Integer imgLength) {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		
+		List imgSrcs = new ArrayList<>();
+		try {
+			if (imgLength != null && imgLength > 1) {
+				for (int i = 0; i < imgDatas.length; i ++) {
+					String filePath = filesConfigService.uploadBase64Pic(imgDatas[i], "chat");
+					imgSrcs.add(filePath);
+				}
+			} else {
+				String filePath = filesConfigService.uploadBase64Pic(imgDatas[0] + "," + imgDatas[1], "chat");
+				imgSrcs.add(filePath);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnMap.put("code", -1);
+			returnMap.put("message", "上传图片失败！");
+			return returnMap;
+		}
+		
+		returnMap.put("code", 0);
+		returnMap.put("data", imgSrcs);
+		returnMap.put("message", "上传图片成功！");
+		return returnMap;
+	}
+	
+	/*
+	@RequestMapping("/getFirstNewData")
+	public Object getFirstNewData() {
+		Map returnMap = new HashMap<>();
+		User loginUser = getLoginUser();
+		
+		
+		
+		returnMap.put("code", 0);
+		returnMap.put("data", imgSrcs);
+		returnMap.put("message", "上传图片成功！");
+		return returnMap;
+	}*/
 	
 	/**
 	 * 获取当前登录用户

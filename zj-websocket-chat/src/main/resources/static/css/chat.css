@@ -55,15 +55,55 @@ p {
 	background-color: #0fc5ef;
  
 }
-#chats .userChat input{
+#chats .userChat div {
+	float:left;
+}
+#chats .userChat div input{
 	height: 24px;
-	width: 360px;
+	width: 320px;
 	border-radius: 10px;
 }
-#chats .userChat button{
+#chats .userChat div button{
 	height: 28px;
 	width: 76px;
 	border-radius: 10px;
+}
+#chats .userChat .addImg{
+	float:left;
+	height: 30px;
+	width: 30px;
+	margin-left: 10px;
+	border-radius: 15px;
+	background: url(/img/add.jpg)
+}
+
+#chats .userChat1 button{
+	height: 28px;
+	width: 76px;
+	border-radius: 10px;
+}
+#chats .userChat1 .addImg{
+	float:left;
+	height: 30px;
+	width: 30px;
+	margin-right: 10px;
+	border-radius: 15px;
+	background: url(/img/add.jpg)
+}
+#chats .userChat1 .chatContent{
+	height: 70px;
+	width: 320px;
+	background-color: white;
+	overflow: scroll;
+	overflow-x: hidden;
+}
+#chats .userChat1 .addImg{
+	float:left;
+	height: 30px;
+	width: 30px;
+	margin-left: 10px;
+	border-radius: 15px;
+	background: url(/img/add.jpg)
 }
 
 #chats .content .other , #chats .content .myself {
@@ -80,7 +120,7 @@ p {
 	/* height: 46px; */
 }
 
-#chats .content .other img{
+#chats .content .other .head{
 	height: 50px;
 	width: 50px;
 	float: left;
@@ -102,6 +142,10 @@ p {
     margin-left: 55px; */
 	/* width:auto; display:inline-block !important; display:inline; */
 }
+#chats .content .other p img{
+	max-height: 200px;
+	max-width: 200px;
+}
 
 /* #chats .content .myself{
 	min-height:46px;
@@ -115,7 +159,7 @@ p {
 	line-height:30px;
 }
 
-#chats .content .myself img {
+#chats .content .myself .head {
 	height: 50px;
 	width: 50px;
 	float: right;
@@ -130,6 +174,10 @@ p {
 	float: right;
 	padding-top: 5px;
 	max-width: 340px;
+}
+#chats .content .myself p img{
+	max-height: 200px;
+	max-width: 200px;
 }
 
 .users .item {

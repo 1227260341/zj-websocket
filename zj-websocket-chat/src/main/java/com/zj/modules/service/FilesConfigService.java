@@ -18,4 +18,6 @@ public interface FilesConfigService {
 	public String downEncryptFileUrlById(Integer id);
 	
 	public String getFileNameById(Integer id);
+	
+	public String uploadBase64Pic(String base64Data, String foldName) throws Exception ;
 }

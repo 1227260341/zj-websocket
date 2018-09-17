@@ -65,7 +65,31 @@
 		</div>
 		
 		<div class="userChat">
-			<input placeholder="请输入聊天内容" /> <button onclick="send()">发送</button>
+			<div>
+				<input placeholder="请输入聊天内容" /> 
+				<button onclick="send()">发送</button>
+			</div>
+			<img class="addImg" title="选择图片"  src="/img/add.jpg" onclick="addGroup()">
+			
+		<!-- 	<img />
+			<img class="addImg" onclick="send()" src=""/>
+			<img class="addGroup" title="添加群"  src="/img/add.jpg" onclick="addGroup()">
+			<button onclick="send()">发送</button> -->
+		</div>
+		
+<!-- 		<img style="width:60px;height:60px" src="data:image/jpeg;base64,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">
+ -->		
+		<div class="userChat1">
+			<div class="chatContent" contenteditable="true">
+				
+			</div>
+			<button onclick="send1()">发送</button>
+			
+			<label class="input-group-btn">
+                <input id="file" type="file" name="file" style="left: -9999px; position: absolute;">
+                <img class="addImg" title="选择图片"  src="/img/add.jpg">
+               <!--  <span class="btn btn-default">选择文件</span> -->
+            </label>
 		</div>
 	</div>
 	
@@ -98,6 +122,9 @@
     } 
     
     console.log("当前登陆人id：" + uid);
+    
+    var pageIndex = 1;
+    var pageSize = 5;
     
     $(document).ready(function() {
     	
@@ -428,6 +455,8 @@
     	try {
     		data = JSON.parse(data);
     	} catch (e) {
+    		//解析不了 则默认 自动去取数据
+    		getMessageRecord(objectId, isGroup, 1);
     		console.log("---setMessageInnerHTML--" + data);
     		return ;
     	}
@@ -473,7 +502,9 @@
     	}
     	//添加消息 入库
         addChatMessage(params);
-    	if (isGroup == 2) {//说明是群组 
+    	//websocket 发送消息
+    	wbSend(params);
+    	/* if (isGroup == 2) {//说明是群组 
     		//获取到群组的用户
     		$.ajax({
     			url:"/user/getGroupById?groupId=" + objectId,
@@ -500,14 +531,105 @@
         renderMyselfHtml(content, loginUser.headUrl);
 		
       	//将滚动条滚动之div最底部
-		$("#chats .content").scrollTop($("#chats .content")[0].scrollHeight);
+		$("#chats .content").scrollTop($("#chats .content")[0].scrollHeight); */
     }
+    
+	//发送消息
+	function send1(){
+    	var content = $("#chats .userChat1 .chatContent").html();//获取到发送的内容
+    	if (content == null || content == "") {
+    		//alert("");
+    		console.log("未输入消息");
+    		return ;
+    	}
+    	
+    	var imgs = $("#chats .userChat1 .chatContent img");
+    	var imgDatas = [];
+    	var imgLength = 0;
+    	if (imgs != null) {
+    		imgLength = imgs.length;
+    		for (var i = 0; i < imgLength; i ++) {
+    			var img = imgs[0];
+    			imgDatas.push(img.src);
+    		}
+    		
+    		//上传图片
+    		$.ajax({
+    			url: "/user/uploadBase64Pic",
+    			type: "POST",
+    			data: {"imgDatas": imgDatas, "imgLength" : imgLength},
+    			dataType: "json",
+    			async: false,
+    			success: function(res) {
+    				if(res.code == 0) {
+    					var imgSrcs = res.data;
+    					for (var i = 0; i < imgSrcs.length; i ++) {
+    						$("#chats .userChat1 .chatContent img")[i].src = imgSrcs[i];
+    		    		}
+    					
+    				} else {
+    					alert(res.message);
+    				}
+    			}
+    		});
+    		
+    		//重新获取内容
+    		content = $("#chats .userChat1 .chatContent").html();//获取到发送的内容
+    	}
+    	
+    	console.log("发送的消息！" + content + "需要发送的对象id=" + objectId);
+    	var params = {
+    		message:content,//此处只为对象方便接收
+    		content:content,
+    		objectId:objectId,
+    		type:isGroup//1 好友， 2 群
+    	}
+    	//添加消息 入库
+        addChatMessage(params);
+    	//websocket 发送消息
+    	wbSend(params);
+    	
+    	$("#chats .userChat1 .chatContent").html("");
+    }
+	
+	//websocket 发送消息
+	function wbSend(params) {
+		if (isGroup == 2) {//说明是群组 
+    		//获取到群组的用户
+    		$.ajax({
+    			url:"/user/getGroupById?groupId=" + objectId,
+    			type:"GET",
+    			data:params,
+    			dataType:"json",
+    			async:false,
+    			success:function(res) {
+    				if(res.code == 0) {
+    					params.groupUserIds = res.data;
+    				} else {
+    					alert(res.message);
+    				}
+    			}
+    		});
+    	}
+		var content = params.content;
+    	params = JSON.stringify(params);
+        websocket.send(params);
+        
+        //清空发送的消息
+        $("#chats input").val("");
+		
+		//渲染是消息
+        renderMyselfHtml(content, loginUser.headUrl);
+		
+      	//将滚动条滚动之div最底部
+		$("#chats .content").scrollTop($("#chats .content")[0].scrollHeight);
+	}
     
     //将消息入库
     function addChatMessage(params) {
     	$.ajax({
 			url:"/user/addChatMessage",
-			type:"GET",
+			type:"POST",
 			data:params,
 			dataType:"json",
 			success:function(res) {
@@ -521,10 +643,14 @@
     }
     
     //获取聊天记录-
-    function getMessageRecord(id, isGroup) {
+    function getMessageRecord(id, isGroup, thisSize) {
+    	var size = pageSize;
+    	if (thisSize != null) {
+    		size = thisSize;
+    	}
     	//获取笑嘻嘻记录
     	$.ajax({
-			url:"/user/getMessageRecord?objectId=" + id + "&isGroup=" + isGroup,
+			url:"/user/getMessageRecord?objectId=" + id + "&isGroup=" + isGroup + "&pageIndex=" + pageIndex + "&pageSize=" + size,
 			type:"GET",
 			//data:params,
 			dataType:"json",
@@ -562,7 +688,7 @@
     	}
     	var html = "<div class='other'>";
 		html += "<div>";
-		html += "<img src='"+ head +"'>";
+		html += "<img class='head' src='"+ head +"'>";
 		html += "<p>" + message + "</p>";
 		html += "</div>";
 		html += "</div>";
@@ -577,7 +703,7 @@
     	}
         var html = "<div class='myself'>";
 		html += "<div>";
-		html += "<img src='"+ head +"'>";
+		html += "<img class='head' src='"+ head +"'>";
 		html += "<p>" + message + "</p>";
 		html += "</div>";
 		html += "</div>";
@@ -643,7 +769,41 @@
   	}
   	
 
+  	//实现添加图片功能
+  	$("#file").change(function (e) {
+        var file = e.target.files[0] || e.dataTransfer.files[0];
+        //$('#photoCover').val(document.getElementById("file").files[0].name);
+        if (file) {
+            var reader = new FileReader();
+            var chatContent = $("#chats .userChat1 .chatContent").html();
+            //alert("aa" + chatContent);
+            reader.onload = function () {
+            	var imgView = "<img style='width:100px;height:100px' src='"+ this.result +"'/>";
+                //$("img").attr("src", this.result);
+                $("#chats .userChat1 .chatContent").append(imgView);
+            }
 
+            reader.readAsDataURL(file);
+        }
+    });
+
+  	/* //获取最新的一条数据
+  	function getFirstNewData() {
+  		$.ajax({
+			url:"/user/getFirstNewData?groupId=" + objectId,
+			type:"GET",
+			data:params,
+			dataType:"json",
+			async:false,
+			success:function(res) {
+				if(res.code == 0) {
+					return res.data;
+				} else {
+					//alert(res.message);
+				}
+			}
+		});
+  	} */
 
     
 </script>

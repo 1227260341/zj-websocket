@@ -12,6 +12,7 @@ import javax.sound.midi.MidiDevice.Info;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,6 +61,40 @@ public class FileUtil {
         
         FileOutputStream out = new FileOutputStream(filePath);
         out.write(file.getBytes());
+        out.flush();
+        out.close();
+        
+        log.info(filePath);
+        String path = "/" + foldName + "/" + fileName;
+        
+        return path;
+    }
+	
+	/**
+	 * 上传 base64图片至本地
+	 * @param imageByte
+	 * @param foldName
+	 * @param suffix
+	 * @param fileName
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public static String uploadBase64PicToLocal(byte[] imageByte, String foldName, String suffix,
+			String fileName, HttpServletRequest request) throws Exception { 
+		
+        String filePath = getProjectPath(request) +  "/files/" + foldName;
+        
+		File targetFile = new File(filePath);  
+        if(!targetFile.exists()){    
+            targetFile.mkdirs();    
+        }       
+        
+        fileName += "." + suffix;
+        filePath += "/" + fileName;
+        
+        FileOutputStream out = new FileOutputStream(filePath);
+        out.write(imageByte);
         out.flush();
         out.close();
         

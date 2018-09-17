@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +22,7 @@ import com.zj.modules.mapper.FilesConfigMapper;
 import com.zj.modules.service.FilesConfigService;
 import com.zj.modules.util.FileUtil;
 import com.zj.modules.util.PropertiesUtil;
+import com.zj.modules.util.UuidUtil;
 
 
 @Service("FilesConfigService")
@@ -228,4 +230,73 @@ public class FilesConfigServiceImpl implements FilesConfigService {
 		String fullPath = downEncryptFileUrl(path);
 		return fullPath;
 	}
+	
+	/**
+	 * 上传 base64 图片
+	 * @param id
+	 * @return
+	 * @throws Exception 
+	 */
+	@Override
+	public String uploadBase64Pic(String base64Data, String foldName) throws Exception {
+		
+		String dataPrix = "";
+        String data = "";
+        if(base64Data == null || "".equals(base64Data)){
+            throw new Exception("上传失败，上传图片数据为空");
+        }else{
+            String [] d = base64Data.split("base64,");
+            if(d != null && d.length == 2){
+                dataPrix = d[0];
+                data = d[1];
+            }else{
+                throw new Exception("上传失败，数据不合法");
+            }
+        }
+
+        String suffix = "";
+        if("data:image/jpeg;".equalsIgnoreCase(dataPrix)){//data:image/jpeg;base64,base64编码的jpeg图片数据
+            suffix = "jpg";
+        } else if("data:image/x-icon;".equalsIgnoreCase(dataPrix)){//data:image/x-icon;base64,base64编码的icon图片数据
+            suffix = "ico";
+        } else if("data:image/gif;".equalsIgnoreCase(dataPrix)){//data:image/gif;base64,base64编码的gif图片数据
+            suffix = "gif";
+        } else if("data:image/png;".equalsIgnoreCase(dataPrix)){//data:image/png;base64,base64编码的png图片数据
+            suffix = "png";
+        }else{
+            throw new Exception("上传图片格式不合法");
+        }
+        
+        byte[] imageByte = Base64Utils.decodeFromString(data);
+        for (int i = 0; i < imageByte.length; ++i) {      
+            if (imageByte[i] < 0) {// 调整异常数据      
+                imageByte[i] += 256;      
+            }      
+        }   
+        String fileName = UuidUtil.get32UUID();
+        String filePath = FileUtil.uploadBase64PicToLocal(imageByte, foldName, suffix, fileName, request);
+		
+        //上传成功保存至 文件配置表
+		String size = "0KB";
+		String makeUser = "";
+		size = getFileSize(imageByte.length);
+		HttpSession session = request.getSession();
+		if (session != null) {
+			User loginUser = (User) session.getAttribute("loginUser");
+			if (loginUser != null) {
+				makeUser = loginUser.getUserName();
+			}
+		}
+		
+		FilesConfig filesConfig = new FilesConfig();
+		filesConfig.setName(fileName);
+		filesConfig.setType(suffix);
+		filesConfig.setSize(size);
+		filesConfig.setPath(filePath);
+		filesConfig.setMakeUser(makeUser);
+		
+		filesConfigMapper.save(filesConfig);
+		return filePath;
+	}
+	
 }
