@@ -411,10 +411,17 @@
     
     //webscoket 
     var websocket = null;
+    
+    function newWebsocket() {
+    	websocket = new WebSocket("ws://localhost:9091/chat");
+    	//websocket = new WebSocket("ws://localhost:9091/chat");
+    	//websocket = new WebSocket("ws://www.6768737.com:9091/chat");
+    }
 
     //判断当前浏览器是否支持WebSocket
     if('WebSocket' in window){
-        websocket = new WebSocket("ws://localhost:9091/chat");
+    	newWebsocket();
+        //websocket = new WebSocket("ws://localhost:9091/chat");
     	//websocket = new WebSocket("ws://www.6768737.com:9091/chat");
     }
     else{
@@ -613,6 +620,9 @@
     	}
 		var content = params.content;
     	params = JSON.stringify(params);
+    	if (websocket == null) {
+    		newWebsocket();
+    	}
         websocket.send(params);
         
         //清空发送的消息
